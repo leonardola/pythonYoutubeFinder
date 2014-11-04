@@ -7,7 +7,7 @@ class Database:
 
     def __init__(self):
 
-        self.connection = sqlite3.connect('database')
+        self.connection = sqlite3.connect('database',detect_types=sqlite3.PARSE_DECLTYPES)
 
         self.cursor = self.connection.cursor()
 
@@ -15,15 +15,16 @@ class Database:
 
         self.cursor.execute(query);
 
-        retorno = self.cursor.fetchmany()
+        return self.cursor.fetchall()
 
-        return retorno
 
     def saveChannel(self, name, date):
 
-        query = "INSERT INTO channel (name, last_download) values('%s','%s')"%(name,date)
+        self.cursor.execute("INSERT INTO channel (name, last_download) values('%s','%s')"%(name,date))
 
-        self.cursor.execute(query)
         self.connection.commit()
 
 
+    def getChannelsList(self):
+
+        return self.executeQuery("Select * from channel")
