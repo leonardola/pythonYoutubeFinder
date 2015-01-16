@@ -8,13 +8,13 @@ stop = False
 
 while not stop:
 
-    channelName = input("Type the name of a channel: ")
+    channelName = raw_input("Type the name of a channel: ")
 
-    dateToStartDownloading = input("What is the first date to download from yyyy-mm-dd:")
+    dateToStartDownloading = raw_input("What is the first date to download from yyyy-mm-dd:")
 
     database.saveChannel(channelName, dateToStartDownloading)
 
-    if(input("Add another channel? y|n ") != "y"):
+    if(raw_input("Add another channel? y|n ") != "y"):
 
         stop = True
 
