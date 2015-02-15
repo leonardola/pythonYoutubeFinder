@@ -1,30 +1,31 @@
 __author__ = 'leonardoalbuquerque'
 
-import sqlite3
+'''import sqlite3'''
 
+import pymongo
+
+from pymongo import MongoClient
 
 class Database:
 
     def __init__(self):
 
-        self.connection = sqlite3.connect('database',detect_types=sqlite3.PARSE_DECLTYPES)
+        client = MongoClient()
 
-        self.cursor = self.connection.cursor()
+        database = client.youtubeDownloader
 
-    def executeQuery(self,query):
-
-        self.cursor.execute(query);
-
-        return self.cursor.fetchall()
+        self.channels = database.channels
 
 
     def saveChannel(self, name, date):
 
-        self.cursor.execute("INSERT INTO channel (name, last_download) values('%s','%s')"%(name,date))
+        addedChannel = self.channels.insert({"name": name, "date": date})
 
-        self.connection.commit()
-
+        return addedChannel
 
     def getChannelsList(self):
 
-        return self.executeQuery("Select * from channel")
+        return self.channels.find();
+
+    def deleteChannel(self,channelName):
+        self.channels.remove({'name':channelName})
