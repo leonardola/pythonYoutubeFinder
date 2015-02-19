@@ -69,10 +69,6 @@ while True:
     if whatToDo in actions:
         actions[whatToDo]()
     else:
-        print "Not recognized"
+        print "Action not recognized"
 
     whatToDo = raw_input("> ")
-
-
-
-

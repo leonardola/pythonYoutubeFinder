@@ -28,4 +28,5 @@ class Database:
         return self.channels.find();
 
     def deleteChannel(self,channelName):
+
         self.channels.remove({'name':channelName})
