@@ -1,0 +1,77 @@
+#!/usr/bin/python
+
+from apiclient.discovery import build
+from apiclient.errors import HttpError
+from oauth2client.tools import argparser
+
+
+# Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
+# tab of
+#   https://cloud.google.com/console
+# Please ensure that you have enabled the YouTube Data API for your project.
+
+
+class Finder:
+
+    DEVELOPER_KEY = ""
+    YOUTUBE_API_SERVICE_NAME = "youtube"
+    YOUTUBE_API_VERSION = "v3"
+
+    def __init__(self,dev_key):
+        self.DEVELOPER_KEY = dev_key
+        YOUTUBE_API_SERVICE_NAME = "youtube"
+        YOUTUBE_API_VERSION = "v3"
+
+    def youtube_search(self,options):
+        youtube = build(self.YOUTUBE_API_SERVICE_NAME, self.YOUTUBE_API_VERSION,
+                        developerKey=self.DEVELOPER_KEY)
+
+        # Call the search.list method to retrieve results matching the specified
+        # query term.
+        search_response = youtube.search().list(
+            q=options.q,
+            part="id,snippet",
+            maxResults=options.max_results,
+            channelId=options.channelId,
+            order=options.order
+        ).execute()
+
+        videos = {}
+        videosId = []
+
+        # Add each result to the appropriate list, and then display the lists of
+        # matching videos, channels, and playlists.
+        for search_result in search_response.get("items", []):
+            if search_result["id"]["kind"] == "youtube#video":
+                videos.update({search_result["snippet"]["title"]:search_result["id"]["videoId"]})
+
+
+                #videos.append("%s (%s)" % (search_result["snippet"]["title"],
+                #                           search_result["id"]["videoId"]))
+                #get the videos ids
+                #videosId.append("%s" % (search_result["id"]["videoId"]))
+
+
+        #print "Videos:\n", "\n".join(videos), "\n"
+        #print "Ids:\n","\n".join(videosId),"\n"
+        return videos
+
+    """search for given channel without the unwanted words"""
+    def search(self,channelName,unwanted_words):
+
+        #adds a - to every unwanted word its a not logical operator for google
+        unwanted_words = [" -" + s for s in unwanted_words]
+        unwanted_words = ''.join(unwanted_words)
+
+        argparser.add_argument("--q", help="Search term", default = "a|e|i|u " + unwanted_words)
+        argparser.add_argument("--channelId", help="Channel id", default = channelName)
+        #argparser.add_argument("--type", help="Video only", default = "video")
+        argparser.add_argument("--part", help="Query columns", default="snippet")
+        argparser.add_argument("--max-results", help="Max results", default=5)
+        argparser.add_argument("--order", help="Order of download", default="date")
+        args = argparser.parse_args()
+
+        try:
+            return self.youtube_search(args)
+        except HttpError, e:
+            print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)

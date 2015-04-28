@@ -2,7 +2,6 @@ __author__ = 'leonardoalbuquerque'
 
 '''import sqlite3'''
 
-import pymongo
 
 from pymongo import MongoClient
 
@@ -17,16 +16,30 @@ class Database:
         self.channels = database.channels
 
 
-    def saveChannel(self, name, date):
+    def save_channel(self, name, date, id, unwanted_words):
 
-        addedChannel = self.channels.insert({"name": name, "date": date})
+        addedChannel = self.channels.insert({"name": name, "date": date,"id": id, "unwanted_words":unwanted_words})
 
         return addedChannel
 
-    def getChannelsList(self):
+    def get_channels_list(self):
 
         return self.channels.find();
 
-    def deleteChannel(self,channelName):
+    def delete_channel(self,channelName):
 
         self.channels.remove({'name':channelName})
+
+    def add_channel_unwanted_word(self,channelName,unwanted_words):
+
+        channel = self.channels.update({"name": channelName},{"$push":{"unwanted_words":{"$each":unwanted_words}}})
+
+        #channel.unwanted_list.insert(unwanted_words)
+
+    def get_channel_unwantedWords(self,channelName):
+
+        return self.channels.findOne({"name":channelName}).unwanted_words
+
+    def remove_channel_unwanted_word(self,channelName,unwanted_word):
+
+        self.channels.findOne({"name":channelName}).findOne({"unwanted_words":unwanted_word}).remove

@@ -1,0 +1,24 @@
+__author__ = 'leonardoalbuquerque'
+
+from Finder import Finder
+from Youtube_dl_interface import Youtube_dl_interface
+from Database import Database
+
+#start the finder
+finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
+
+#start the youtube-dl api
+youtube_dl = Youtube_dl_interface()
+
+#start the database conection
+database = Database()
+
+channels = database.get_channels_list()
+
+for channel in channels:
+
+
+    #search videos
+    videos = finder.search(channel["id"],channel["unwanted_words"])
+
+    youtube_dl.download(videos.itervalues().next())
