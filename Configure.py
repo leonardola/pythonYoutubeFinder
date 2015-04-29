@@ -6,9 +6,11 @@ database = Database.Database()
 
 
 def delete_channel():
-    channel_name = raw_input("Type the name of channel to delete")
+    channel_name = raw_input("Type the name of channel to delete: ")
 
     database.delete_channel(channel_name)
+
+    print ("Channel deleted")
 
 
 def add_channel():
@@ -21,12 +23,13 @@ def add_channel():
 
         channelId = raw_input("Type the id of the channel: ")
 
-        dateToStartDownloading = raw_input("What is the first date to download from yyyy-mm-dd:")
+        #date must be rfc 3339 compliant
+        dateToStartDownloading = raw_input("What is the first date to download from yyyy-mm-dd: ") + "T00:00:00Z"
 
         unwanted_words = []
 
         #unwanted words
-        if(raw_input("Do you want to add some unwanted words? y|n") == "y"):
+        if(raw_input("Do you want to add some unwanted words? y|n ") == "y"):
 
             print("You can stop anytime by tiping stop")
             stop_unwanted = False
@@ -64,8 +67,15 @@ def list_channels():
 
         print(channel['name']+": " + channel["id"])
 
-def list_channel_unwanted():
-    database.getChannelUnwantedWords(raw_input("Type the channel name:"))
+def list_channel_unwanted(channel_name = False):
+
+    if channel_name:
+        unwanted_words = database.get_channel_unwanted_words(channel_name)
+    else:
+        unwanted_words = database.get_channel_unwanted_words(raw_input("Type the channel name: "))
+
+    for unwanted_word in unwanted_words:
+        print(unwanted_word+"\n")
 
 def show_menu():
     return raw_input("What do you want to configure?\n" +
@@ -99,6 +109,7 @@ def add_channel_unwanted():
             unwanted_words.append(unwanted_word)
         else:
             database.add_channel_unwanted_word(channel_name,unwanted_words)
+            stop = True
 
     print("All unwanted words were saved")
 
@@ -106,20 +117,24 @@ def remove_channel_unwanted():
     channel_name = raw_input("Type the channel name: ")
 
     if(raw_input("Do you want to list all unwanted words of this channel? y|n ") == "y" ):
-        for word in database.get_channel_unwantedWords(channel_name):
-
-            print(word)
+        list_channel_unwanted(channel_name)
 
     print("To stop type stop at any time\n ")
 
     stop = False
 
+    unwanted_words = []
+
     while not stop:
         unwanted_word = raw_input("Type the unwanted word: ")
-        if(unwanted_word == "stop"):
-            stop = True
+        if(unwanted_word != "stop"):
+
+            unwanted_words.append(unwanted_word)
+
         else:
-            database.remove_channel_unwanted_word(channel_name,unwanted_word)
+            database.remove_channel_unwanted_word(channel_name,unwanted_words)
+            stop = True
+
     print("Removed")
 
 

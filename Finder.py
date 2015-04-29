@@ -4,7 +4,6 @@ from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 
-
 # Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
 # tab of
 #   https://cloud.google.com/console
@@ -28,22 +27,40 @@ class Finder:
 
         # Call the search.list method to retrieve results matching the specified
         # query term.
-        search_response = youtube.search().list(
-            q=options.q,
-            part="id,snippet",
-            maxResults=options.max_results,
-            channelId=options.channelId,
-            order=options.order
-        ).execute()
+        if hasattr(options,"q"):
 
-        videos = {}
+            search_response = youtube.search().list(
+                q=options.q,
+                part="id,snippet",
+                maxResults=options.max_results,
+                channelId=options.channelId,
+                order=options.order,
+                publishedAfter=options.publishedAfter
+            ).execute()
+        else:
+            search_response = youtube.search().list(
+                part="id,snippet",
+                maxResults=options.max_results,
+                channelId=options.channelId,
+                order=options.order,
+                publishedAfter=options.publishedAfter
+            ).execute()
+
+
+        videos = []
         videosId = []
 
         # Add each result to the appropriate list, and then display the lists of
         # matching videos, channels, and playlists.
         for search_result in search_response.get("items", []):
             if search_result["id"]["kind"] == "youtube#video":
-                videos.update({search_result["snippet"]["title"]:search_result["id"]["videoId"]})
+                videos.append(
+                    {
+                        "id":search_result["id"]["videoId"],
+                        "tittle":search_result["snippet"]["title"],
+                        "published_at":search_result["snippet"]["title"]
+                    }
+                )
 
 
                 #videos.append("%s (%s)" % (search_result["snippet"]["title"],
@@ -57,18 +74,21 @@ class Finder:
         return videos
 
     """search for given channel without the unwanted words"""
-    def search(self,channelName,unwanted_words):
+    def search(self,channelName,unwanted_words,starting_date):
 
         #adds a - to every unwanted word its a not logical operator for google
-        unwanted_words = [" -" + s for s in unwanted_words]
-        unwanted_words = ''.join(unwanted_words)
+        if unwanted_words:
+            unwanted_words = [" -" + s for s in unwanted_words]
+            unwanted_words = ''.join(unwanted_words)
 
-        argparser.add_argument("--q", help="Search term", default = "a|e|i|u " + unwanted_words)
+            argparser.add_argument("--q", help="Search term", default = "a|e|i|u " + unwanted_words)
+
         argparser.add_argument("--channelId", help="Channel id", default = channelName)
         #argparser.add_argument("--type", help="Video only", default = "video")
         argparser.add_argument("--part", help="Query columns", default="snippet")
         argparser.add_argument("--max-results", help="Max results", default=5)
         argparser.add_argument("--order", help="Order of download", default="date")
+        argparser.add_argument("--publishedAfter", help="Day to start looking for", default=starting_date)
         args = argparser.parse_args()
 
         try:

@@ -24,7 +24,7 @@ class Database:
 
     def get_channels_list(self):
 
-        return self.channels.find();
+        return self.channels.find()
 
     def delete_channel(self,channelName):
 
@@ -34,12 +34,24 @@ class Database:
 
         channel = self.channels.update({"name": channelName},{"$push":{"unwanted_words":{"$each":unwanted_words}}})
 
-        #channel.unwanted_list.insert(unwanted_words)
+    def get_channel_unwanted_words(self,channelName):
 
-    def get_channel_unwantedWords(self,channelName):
+        channel = self.channels.find_one({"name":channelName})
 
-        return self.channels.findOne({"name":channelName}).unwanted_words
+        if not channel:
+            print("Channel not found")
+            return
 
-    def remove_channel_unwanted_word(self,channelName,unwanted_word):
+        return channel['unwanted_words']
 
-        self.channels.findOne({"name":channelName}).findOne({"unwanted_words":unwanted_word}).remove
+
+    def remove_channel_unwanted_word(self,channel_name,unwanted_words):
+
+        self.channels.update({"name":channel_name},{"$pull":{"unwanted_words":{"$in":unwanted_words}}})
+
+    def change_channel_date(self,channel_name,new_date):
+
+        self.channels.update(
+            {"name":channel_name},#finds the channel
+            {"$set":{"date":new_date}}#update the date
+        )
