@@ -78,6 +78,30 @@ class Database:
 
         self.videos.update({"id":video_id},{"$set":{"downloaded":True}})
 
-    def get_channel_not_downloaded_videos(self,channel_id):
+    #pass the channel_name or channel_id
+    def get_channel_not_downloaded_videos(self,**kwargs):
 
-        self.videos.find({"channel_id":channel_id})
+        if len(kwargs) == 0:
+
+            self.videos.find({"downloaded":None})
+
+        elif "channel_name" in kwargs:
+
+            channel = self.channels.find_one({"name":kwargs['channel_name']})
+
+            if not channel:
+                return False
+
+            channel_id = channel['_id']
+        else:
+            channel_id = kwargs['channel_id']
+
+        return self.videos.find({"channel_id":channel_id,"downloaded":None})
+
+    def video_was_downloaded(self,video_id):
+
+        if self.videos.find_one({"id":video_id,"downloaded":True}):
+            return True
+
+
+        return False
