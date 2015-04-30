@@ -14,7 +14,10 @@ class Database:
         database = client.youtubeDownloader
 
         self.channels = database.channels
+        self.videos = database.videos
 
+
+    #channel
 
     def save_channel(self, name, date, id, unwanted_words):
 
@@ -55,3 +58,26 @@ class Database:
             {"name":channel_name},#finds the channel
             {"$set":{"date":new_date}}#update the date
         )
+
+
+
+    #videos
+    def save_video(self,channel_id, video):
+
+        video['channel_id'] = channel_id
+
+        if not self.videos.find_one({"id":video['id']}):
+
+            self.videos.insert(video)
+
+            return False
+
+        return True
+
+    def set_video_downloaded(self,video_id):
+
+        self.videos.update({"id":video_id},{"$set":{"downloaded":True}})
+
+    def get_channel_not_downloaded_videos(self,channel_id):
+
+        self.videos.find({"channel_id":channel_id})

@@ -48,7 +48,6 @@ class Finder:
 
 
         videos = []
-        videosId = []
 
         # Add each result to the appropriate list, and then display the lists of
         # matching videos, channels, and playlists.
@@ -58,19 +57,10 @@ class Finder:
                     {
                         "id":search_result["id"]["videoId"],
                         "tittle":search_result["snippet"]["title"],
-                        "published_at":search_result["snippet"]["title"]
+                        "published_at":search_result["snippet"]["publishedAt"]
                     }
                 )
 
-
-                #videos.append("%s (%s)" % (search_result["snippet"]["title"],
-                #                           search_result["id"]["videoId"]))
-                #get the videos ids
-                #videosId.append("%s" % (search_result["id"]["videoId"]))
-
-
-        #print "Videos:\n", "\n".join(videos), "\n"
-        #print "Ids:\n","\n".join(videosId),"\n"
         return videos
 
     """search for given channel without the unwanted words"""

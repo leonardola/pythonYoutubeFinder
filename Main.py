@@ -21,9 +21,11 @@ for channel in channels:
     #search videos
     videos = finder.search(channel["id"],channel["unwanted_words"],channel['date'])
 
-    #for video in videos:
+    for video in videos:
 
-        #youtube_dl.download(video["id"])
+        if database.save_video(channel['_id'],video):
+            youtube_dl.download(video["id"])
+            database.set_video_downloaded(video['id'])
 
     if videos:
         last_video = videos[-1]
