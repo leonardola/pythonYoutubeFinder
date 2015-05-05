@@ -20,16 +20,17 @@ class Finder:
         self.DEVELOPER_KEY = dev_key
         YOUTUBE_API_SERVICE_NAME = "youtube"
         YOUTUBE_API_VERSION = "v3"
+        self.youtube = build(self.YOUTUBE_API_SERVICE_NAME, self.YOUTUBE_API_VERSION,
+                        developerKey=self.DEVELOPER_KEY)
 
     def youtube_search(self,options):
-        youtube = build(self.YOUTUBE_API_SERVICE_NAME, self.YOUTUBE_API_VERSION,
-                        developerKey=self.DEVELOPER_KEY)
+
 
         # Call the search.list method to retrieve results matching the specified
         # query term.
         if hasattr(options,"q"):
 
-            search_response = youtube.search().list(
+            search_response = self.youtube.search().list(
                 q=options.q,
                 part="id,snippet",
                 channelId=options.channelId,
@@ -37,7 +38,7 @@ class Finder:
                 publishedAfter=options.publishedAfter
             ).execute()
         else:
-            search_response = youtube.search().list(
+            search_response = self.youtube.search().list(
                 part="id,snippet",
                 channelId=options.channelId,
                 order=options.order,
@@ -82,3 +83,35 @@ class Finder:
             return self.youtube_search(args)
         except HttpError, e:
             print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
+
+
+    def get_channel_id(self,channel_name):
+
+        channel_name.replace(" ","%20")
+
+        search_response = self.youtube.search().list(
+            q=channel_name,
+            part="snippet",
+            type="channel"
+        ).execute()
+
+        channels = search_response.get("items", [])
+
+        if len(channels) > 1:
+
+            print("multiple channels were found choose one from: \n")
+
+            for id,channel in enumerate(channels):
+                print `id` + "> " + channel['snippet']['title'] + ": " + channel['snippet']['description'] + " \n"
+
+            choosen_channel = raw_input("Type the number of the choosen one: ")
+
+            return channels[int(choosen_channel)]['snippet']['channelId']
+
+        if len(channels) == 1:
+
+            return channels[0]['id']['channelId']
+
+        print("No channel was found\n")
+
+        return False

@@ -1,9 +1,11 @@
 __author__ = 'leonardoalbuquerque'
 
 import Database
+from Finder import Finder
 
 database = Database.Database()
-
+#should get this from db
+finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
 
 def delete_channel():
     channel_name = raw_input("Type the name of channel to delete: ")
@@ -19,9 +21,16 @@ def add_channel():
 
     while not stop:
 
-        channelName = raw_input("Type the name of a channel: ")
+        #that aparently is a pythonic way of doing a do-while :(
+        while True:
 
-        channelId = raw_input("Type the id of the channel: ")
+            channel_name = raw_input("Type the name of a channel: ")
+
+            channel_id = finder.get_channel_id(channel_name)
+            if channel_id:
+                break
+
+        #channel_id = raw_input("Type the id of the channel: ")
 
         #date must be rfc 3339 compliant
         dateToStartDownloading = raw_input("What is the first date to download from yyyy-mm-dd: ") + "T00:00:00Z"
@@ -42,7 +51,7 @@ def add_channel():
                     unwanted_words.append(input)
 
 
-        database.save_channel(channelName, dateToStartDownloading, channelId,unwanted_words)
+        database.save_channel(channel_name, dateToStartDownloading, channel_id,unwanted_words)
 
         if(raw_input("Add another channel? y|n ") != "y"):
 

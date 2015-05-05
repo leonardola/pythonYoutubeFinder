@@ -16,3 +16,11 @@ sudo pip install youtube-dl
 you need to generate a key from google developer console and also allow api v3.
 
 key AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E
+
+
+installation on ubuntu
+$ sudo apt-get install python
+$ sudo apt-get install python-pip python-dev build-essential 
+$ sudo pip install --upgrade pip 
+$ sudo pip install --upgrade virtualenv  
+$ sudo apt-get install mongodb
