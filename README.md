@@ -1,3 +1,5 @@
+always code in utf-8
+
 install requests library
 
 requires mongodb
