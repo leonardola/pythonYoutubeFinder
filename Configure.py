@@ -86,7 +86,8 @@ def show_menu():
               " add_channel_unwanted: Add unwanted words to a channel\n"
               " remove_channel_unwanted: Remove unwanted words to a channel\n"
               " delete_channel: Deletes a  channel \n" +
-              " configure_path: Configures the path where things are downloaded \n" +
+              " set_download_path: Configures the path where things are downloaded \n" +
+              " show_download_path: Shows the donwload path \n"+
               " exit: Exit the configuration \n" +
               " menu: Show this menu\n"+
               "> "
@@ -138,21 +139,40 @@ def remove_channel_unwanted():
     print("Removed")
 
 
+def set_download_path():
+
+    download_path = raw_input("Type the absolute path to download the files: ")
+
+    if not download_path.endswith("/"):
+        download_path += "/"
+
+    database.set_download_path(download_path)
+
+def get_download_path():
+    print(database.get_download_path())
 
 actions = {
     'list_channels': list_channels,
     'list_channel_unwanted': list_channel_unwanted,
     'add_channel_unwanted': add_channel_unwanted,
     'remove_channel_unwanted':remove_channel_unwanted,
-    'configure_path': configure_path,
+    'set_download_path': set_download_path,
+    'show_download_path':get_download_path,
     'add_channel': add_channel,
     'delete_channel': delete_channel,
     'menu':show_menu,
     'exit': quit
 }
 
+test = database.get_download_path()
+
+if not test:
+
+    set_download_path()
+
 
 whatToDo = show_menu()
+
 
 
 while True:

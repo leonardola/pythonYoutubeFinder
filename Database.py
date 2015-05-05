@@ -15,6 +15,7 @@ class Database:
 
         self.channels = database.channels
         self.videos = database.videos
+        self.configuration = database.configuration
 
 
     #channel
@@ -78,7 +79,8 @@ class Database:
 
         self.videos.update({"id":video_id},{"$set":{"downloaded":True}})
 
-    #pass the channel_name or channel_id
+    # gets all not downloaded videos of a channel by its id or name,
+    # if none is given than finds all not downloaded videos
     def get_channel_not_downloaded_videos(self,**kwargs):
 
         if len(kwargs) == 0:
@@ -103,5 +105,20 @@ class Database:
         if self.videos.find_one({"id":video_id,"downloaded":True}):
             return True
 
+
+        return False
+
+    # general config
+
+    def set_download_path(self,path):
+
+        self.configuration.update({"name":"download_path"},{"download_path":path,"name":"download_path"},upsert=True)
+
+    def get_download_path(self):
+
+        download_path = self.configuration.find_one({"name":"download_path"})
+
+        if download_path:
+            return download_path['download_path']
 
         return False

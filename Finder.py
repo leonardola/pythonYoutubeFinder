@@ -32,7 +32,6 @@ class Finder:
             search_response = youtube.search().list(
                 q=options.q,
                 part="id,snippet",
-                maxResults=options.max_results,
                 channelId=options.channelId,
                 order=options.order,
                 publishedAfter=options.publishedAfter
@@ -40,7 +39,6 @@ class Finder:
         else:
             search_response = youtube.search().list(
                 part="id,snippet",
-                maxResults=options.max_results,
                 channelId=options.channelId,
                 order=options.order,
                 publishedAfter=options.publishedAfter
@@ -76,7 +74,6 @@ class Finder:
         argparser.add_argument("--channelId", help="Channel id", default = channelName)
         #argparser.add_argument("--type", help="Video only", default = "video")
         argparser.add_argument("--part", help="Query columns", default="snippet")
-        argparser.add_argument("--max-results", help="Max results", default=5)
         argparser.add_argument("--order", help="Order of download", default="date")
         argparser.add_argument("--publishedAfter", help="Day to start looking for", default=starting_date)
         args = argparser.parse_args()
