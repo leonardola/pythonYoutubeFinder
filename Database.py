@@ -9,7 +9,7 @@ class Database:
 
     def __init__(self):
 
-        client = MongoClient()
+        client = MongoClient("127.0.0.1")
 
         database = client.youtubeDownloader
 
