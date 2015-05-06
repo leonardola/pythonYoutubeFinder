@@ -42,4 +42,4 @@ for channel in channels:
     print "Not downloaded yet\n"
 
     for video in videos:
-        print video['tittle']+"\n"
+        print "%s\n" % (video['tittle'])
