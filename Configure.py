@@ -24,7 +24,7 @@ def add_channel():
         #that aparently is a pythonic way of doing a do-while :(
         while True:
 
-            channel_name = raw_input("Type the name of a channel: ")
+            channel_name = unicode(raw_input("Type the name of a channel: "), "utf-8")
 
             channel_id = finder.get_channel_id(channel_name)
             if channel_id:
