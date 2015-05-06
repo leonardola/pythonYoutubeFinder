@@ -102,7 +102,9 @@ class Finder:
             print("multiple channels were found choose one from: \n")
 
             for id,channel in enumerate(channels):
-                print `id` + "> " + channel['snippet']['title'] + ": " + channel['snippet']['description'] + " \n"
+                channel_data = "%s> %s: %s\n" % (`id`,channel['snippet']['title'],channel['snippet']['description'])
+
+                print channel_data.encode('ascii',"ignore")
 
             choosen_channel = raw_input("Type the number of the choosen one: ")
 
