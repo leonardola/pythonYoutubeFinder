@@ -42,9 +42,9 @@ for channel in channels:
 
         database.change_channel_date(channel["name"],last_video["published_at"])
 
-    videos = database.get_channel_not_downloaded_videos(channel_name = channel['name'])
 
-    print "Not downloaded yet\n"
+videos = database.get_channel_not_downloaded_videos()
+print "Not downloaded yet\n"
 
-    for video in videos:
-        print "%s\n" % (video['tittle'])
+for video in videos:
+    print "%s\n" % (video['tittle'])

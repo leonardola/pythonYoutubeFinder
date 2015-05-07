@@ -85,7 +85,7 @@ class Database:
 
         if len(kwargs) == 0:
 
-            self.videos.find({"downloaded":None})
+            return self.videos.find({"downloaded":None})
 
         elif "channel_name" in kwargs:
 
