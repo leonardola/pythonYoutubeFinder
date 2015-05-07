@@ -22,14 +22,19 @@ for channel in channels:
     #search videos
     videos = finder.search(channel["id"],channel["unwanted_words"],channel['date'])
 
+    #this allow to save all videos before downloading so if
+    #anything happens while downloading it can recover
+    for video in videos:
+        database.save_video(channel['_id'],video)
+
+    #download each video
     for video in videos:
 
-        # this is a problem, it only saves one video each time on db, if a download fails this will bite
-        # save all the videos first and then download all the ones that have not been downloaded
-        """if database.save_video(channel['_id'],video) or not database.video_was_downloaded(video['id']):
+        if not database.video_was_downloaded(video['id']):
+
             youtube_dl.download(video["id"],database.get_download_path())
             print("downloaded")
-            database.set_video_downloaded(video['id'])"""
+            database.set_video_downloaded(video['id'])
 
     #sets the starting download date as the last video of the channel
     if videos:

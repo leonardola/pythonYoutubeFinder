@@ -89,7 +89,7 @@ def list_channel_unwanted(channel_name = False):
 def show_menu():
     return raw_input("What do you want to configure?\n" +
               " add_channel: Adds new channels to the channels list \n" +
-              " modify_channel: Modifies a channel \n" +
+              " change_channel_date: Modifies a channel start downloading date\n" +
               " list_channels: List all channels \n" +
               " list_channel_unwanted: List all unwanted words of a channel\n"+
               " add_channel_unwanted: Add unwanted words to a channel\n"
@@ -160,8 +160,17 @@ def set_download_path():
 def get_download_path():
     print(database.get_download_path())
 
+
+def change_channel_date():
+    channel_name = raw_input("Type the channel name: ")
+    new_date = raw_input("Type the new date to start downloading yyyy-mm-dd: ") + "T00:00:00Z"
+
+    database.change_channel_date(channel_name,new_date)
+
+
 actions = {
     'list_channels': list_channels,
+    'change_channel_date': change_channel_date,
     'list_channel_unwanted': list_channel_unwanted,
     'add_channel_unwanted': add_channel_unwanted,
     'remove_channel_unwanted':remove_channel_unwanted,
