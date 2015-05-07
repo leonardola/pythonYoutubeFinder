@@ -26,10 +26,10 @@ for channel in channels:
 
         # this is a problem, it only saves one video each time on db, if a download fails this will bite
         # save all the videos first and then download all the ones that have not been downloaded
-        if database.save_video(channel['_id'],video) or not database.video_was_downloaded(video['id']):
+        """if database.save_video(channel['_id'],video) or not database.video_was_downloaded(video['id']):
             youtube_dl.download(video["id"],database.get_download_path())
             print("downloaded")
-            database.set_video_downloaded(video['id'])
+            database.set_video_downloaded(video['id'])"""
 
     #sets the starting download date as the last video of the channel
     if videos:
