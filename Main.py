@@ -65,7 +65,9 @@ for channel in channels:
 
 
 videos = database.get_not_downloaded_videos()
-print "Not downloaded yet\n"
 
-for video in videos:
-    print "%s\n" % (video['tittle'])
+if videos.count() > 0:
+    print "Videos that failed\n"
+
+    for video in videos:
+        print "%s\n" % (video['tittle'])
