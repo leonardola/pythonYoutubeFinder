@@ -80,8 +80,8 @@ class Database:
         self.videos.update({"id":video_id},{"$set":{"downloaded":True}})
 
     # gets all not downloaded videos of a channel by its id or name,
-    # if none is given than finds all not downloaded videos
-    def get_channel_not_downloaded_videos(self,**kwargs):
+    # if no channel is given than finds not downloaded videos from all channels
+    def get_not_downloaded_videos(self,**kwargs):
 
         if len(kwargs) == 0:
 
