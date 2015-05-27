@@ -10,10 +10,10 @@ def download_video(videoId):
     if not database.video_was_downloaded(videoId):
 
         youtube_dl.download(videoId,database.get_download_path())
+        print("Downloaded")
     else:
         print("Already downloaded")
 
-    print("Downloaded")
     database.set_video_downloaded(videoId)
 
 #downloads all the videso that failed to download last time
