@@ -189,14 +189,14 @@ if not test:
     set_download_path()
 
 
-whatToDo = show_menu()
+what_to_do = show_menu()
 
 
 
 while True:
-    if whatToDo in actions:
-        actions[whatToDo]()
+    if what_to_do in actions:
+        actions[what_to_do]()
     else:
         print "Action not recognized"
 
-    whatToDo = raw_input("> ")
+    what_to_do = raw_input("> ")
