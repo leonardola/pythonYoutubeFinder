@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+    <div>
+        <a href="{{url_for('downloading_page')}}"><div>Downloading</div></a>
+        <script src="{{url_for('static', filename='jquery.js')}}"></script>
+        <script src="{{url_for('static', filename='ejs.js')}}"></script>
+    </div>
+    {% endblock %}
+</head>
+<body>
+
+<div id="content">{% block content %}{% endblock %}</div>
+<div id="footer">
+    {% block footer %}
+
+    {% endblock %}
+</div>
+</body>
+</html>

@@ -1,9 +1,7 @@
 __author__ = 'leonardoalbuquerque'
 
-'''import sqlite3'''
-
-
 from pymongo import MongoClient
+import time
 
 class Database:
 
@@ -68,16 +66,22 @@ class Database:
         video['channel_id'] = channel_id
 
         if not self.videos.find_one({"id":video['id']}):
-
+            video['add_date'] = time.strftime("%d/%m/%Y-%H:%M:%S")
             self.videos.insert(video)
 
             return False
 
         return True
 
-    def set_video_downloaded(self,video_id):
+    def set_video_downloaded(self, video_id):
 
         self.videos.update({"id":video_id},{"$set":{"downloaded":True}})
+
+    def set_video_download_data(self, video_id, download_data):
+        self.videos.update(
+            {"id": video_id},
+            {"$set":{"download_data": download_data}}
+        )
 
     # gets all not downloaded videos of a channel by its id or name,
     # if no channel is given than finds not downloaded videos from all channels
@@ -85,7 +89,9 @@ class Database:
 
         if len(kwargs) == 0:
 
-            return self.videos.find({"downloaded":None})
+            return self.videos.find({"downloaded":None}).sort([
+                ("add_date", -1)
+            ])
 
         elif "channel_name" in kwargs:
 
@@ -104,7 +110,6 @@ class Database:
 
         if self.videos.find_one({"id":video_id,"downloaded":True}):
             return True
-
 
         return False
 
