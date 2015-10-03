@@ -4,7 +4,7 @@
     <%if(video['downloadData']){%>
         <div><%=video['downloadData']['_total_bytes_str']%></div>
         <div><%=video['downloadData']['_speed_str']%></div>
-        <progress max="100" class="progress" value="'+video['downloadData']['_percent_str']+'"></progress>
+        <progress max="100" class="progress" value="<%=video['downloadData']['_percent_str'].replace('%','').trim()%>"></progress>
     <%}%>
 
 </div>

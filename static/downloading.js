@@ -6,7 +6,10 @@ $(document).ready(function () {
             showVideosData(data.data);
         });
     }
+
     getVideosStatus();
+
+    setInterval(getVideosStatus,500);
 
     function showVideosData(videos){
         var html = '';
