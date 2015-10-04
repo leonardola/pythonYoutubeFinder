@@ -11,6 +11,7 @@ class DownloadScheduler():
         cron = Scheduler(daemon=True)
         # Explicitly kick off the background thread
         cron.start()
+        main.start()
 
         @cron.interval_schedule(hours=2)
         def job_function():
