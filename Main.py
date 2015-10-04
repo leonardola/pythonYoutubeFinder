@@ -4,72 +4,82 @@ from Finder import Finder
 from Youtube_dl_interface import Youtube_dl_interface
 from Database import Database
 
-#donwload a video then set it as downloaded
-def download_video(videoId):
+class Main:
 
-    if not database.video_was_downloaded(videoId):
+    def __init__(self, socketio):
 
-        youtube_dl.download(videoId,database.get_download_path())
-        print("Downloaded")
-    else:
-        print("Already downloaded")
+        self.socketio = socketio
+        socketio.emit('my event', {'data': 42})
 
-    database.set_video_downloaded(videoId)
+        #start the finder
+        self.finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
 
-#downloads all the videso that failed to download last time
-def download_failed_videos():
+        #start the youtube-dl api
+        self.youtube_dl = Youtube_dl_interface(self.socketio)
 
-    videos = database.get_not_downloaded_videos()
+        #start the database conection
+        self.database = Database()
 
-    if videos.count() > 0:
-        print "downloading videos that failed download"
+        #finds new videos
+        self.channels = self.database.get_channels_list()
 
-    for video in videos:
-        print video['tittle'] + "\n"
-        download_video(video['id'])
+        self.download_path = self.database.get_download_path()
 
-#start the finder
-finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
+    def start(self):
 
-#start the youtube-dl api
-youtube_dl = Youtube_dl_interface()
+        #it is good to download failed videos first
+        self.download_failed_videos()
 
-#start the database conection
-database = Database()
+        for channel in self.channels:
 
-#it is good to download failed videos first
-download_failed_videos()
+            #search videos
+            videos = self.finder.search(channel["id"],channel["unwanted_words"],channel['date'])
 
-#finds new videos
-channels = database.get_channels_list()
+            #this allow to save all videos before downloading so if
+            #anything happens while downloading it can recover
+            for video in videos:
+                self.database.save_video(channel['_id'],video)
 
-download_path = database.get_download_path()
+            #download each video
+            for video in videos:
+                download_video(video['id'])
 
-for channel in channels:
+            #sets the starting download date as the last video of the channel
+            if videos:
+                last_video = videos[-1]
 
-    #search videos
-    videos = finder.search(channel["id"],channel["unwanted_words"],channel['date'])
-
-    #this allow to save all videos before downloading so if
-    #anything happens while downloading it can recover
-    for video in videos:
-        database.save_video(channel['_id'],video)
-
-    #download each video
-    for video in videos:
-        download_video(video['id'])
-
-    #sets the starting download date as the last video of the channel
-    if videos:
-        last_video = videos[-1]
-
-        database.change_channel_date(channel["name"],last_video["published_at"])
+                self.database.change_channel_date(channel["name"],last_video["published_at"])
 
 
-videos = database.get_not_downloaded_videos()
+        videos = self.database.get_not_downloaded_videos()
 
-if videos.count() > 0:
-    print "Videos that failed\n"
+        if videos.count() > 0:
+            print "Videos that failed\n"
 
-    for video in videos:
-        print "%s\n" % (video['tittle'])
+            for video in videos:
+                print "%s\n" % (video['tittle'])
+
+    #donwload a video then set it as downloaded
+    def download_video(self,videoId):
+
+        if not self.database.video_was_downloaded(videoId):
+
+            self.youtube_dl.download(videoId,self.database.get_download_path())
+            print("Downloaded")
+        else:
+            print("Already downloaded")
+
+        self.database.set_video_downloaded(videoId)
+
+    #downloads all the videso that failed to download last time
+    def download_failed_videos(self):
+
+        videos = self.database.get_not_downloaded_videos()
+
+        if videos.count() > 0:
+            print "downloading videos that failed download"
+
+        for video in videos:
+            print video['tittle'] + "\n"
+            self.download_video(video['id'])
+

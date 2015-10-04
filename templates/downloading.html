@@ -1,4 +1,3 @@
-
 {% extends "header.html" %}
 
 
@@ -6,14 +5,21 @@
 {% block head %}
 {{ super() }}
     {% block javascript %}
+        <script src="{{url_for('static', filename='socketio.js')}}"></script>
         <script src="{{url_for('static', filename='downloading.js')}}"></script>
+
     {% endblock %}
 {% endblock %}
 
 {% block content %}
     <div id="Downloading">
         {% for video in videos %}
-            <div class="downloading_video" video_id="{{video['_id']}}">{{video['tittle']}}</div>
+            <div class="downloading_video" video_id="{{video['id']}}">
+                <div>{{video['tittle']}}</div>
+                <div class="speed">Stopped</div>
+                <progress max="100" class="progress" value="0" hidden></progress>
+                <div>-</div>
+            </div>
         {% endfor %}
     </div>
 

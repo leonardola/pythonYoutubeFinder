@@ -1,3 +1,4 @@
+Only works properly with python 2
 always code in utf-8
 
 install requests library
@@ -11,6 +12,8 @@ sudo pip install requests
 sudo pip install --upgrade google-api-python-client
 
 sudo pip install youtube-dl
+
+sudo pip install flask
 
 
 you need to generate a key from google developer console and also allow api v3.

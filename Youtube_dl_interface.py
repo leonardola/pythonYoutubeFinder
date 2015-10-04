@@ -6,15 +6,18 @@ database = Database()
 
 class Youtube_dl_interface:
 
-    video_id = False;
+    def __init__(self, socketio):
+        self.socketio = socketio
+        self.video_id = False
 
     def progress_hook(self, data):
 
         database.set_video_download_data(self.video_id, data)
+        self.socketio.emit('download status changed', {'videoId':self.video_id, 'downloadData': data})
 
         return
 
-    def download(self,video_id,download_path):
+    def download(self, video_id, download_path):
 
         if not download_path:
             print("Download path was not given")

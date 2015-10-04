@@ -1,32 +1,17 @@
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+socket.on('connect', function() {
+    socket.emit('my event', {data: 'I\'m connected!'});
+});
 
-$(document).ready(function () {
+socket.on('download status changed', function(msg){
 
-    function getVideosStatus(){
-        $.get("/videos", function (data) {
-            showVideosData(data.data);
-        });
-    }
+    var videoElement = $("#Downloading .downloading_video[video_id='"+msg.videoId+"']");
+    var downloadData =  msg['downloadData'];
+    var transferedPercentage = downloadData['_percent_str'].replace('%','').trim();
 
-    getVideosStatus();
+    videoElement.find("progress").val(transferedPercentage);
+    videoElement.find(".progress").show();
+    videoElement.find(".speed").html(downloadData['_speed_str']);
 
-    setInterval(getVideosStatus,500);
-
-    function showVideosData(videos){
-        var html = '';
-
-        var ejsData = new EJS({url: '/static/Templates/downloadingVideo.ejs.tmpl'});
-        $('#renderPrice').html();
-
-        for(var i in videos){
-            if(!videos.hasOwnProperty(i)){
-                continue;
-            }else{
-                var video = videos[i]
-            }
-
-            html += ejsData.render({video: video});
-        }
-
-        $("#Downloading").html(html);
-    }
+    console.log(msg)
 });
