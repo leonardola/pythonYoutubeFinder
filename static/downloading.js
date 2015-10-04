@@ -15,3 +15,15 @@ socket.on('download status changed', function(msg){
 
     console.log(msg)
 });
+
+
+$(document).ready(function () {
+    $("#Downloading .deleteVideo").click(function () {
+        var parentElement = $(this).parent();
+        var videoId = parentElement.attr("video_id");
+
+        $.post("/video/delete/"+videoId, function (data) {
+            parentElement.remove();
+        });
+    });
+});

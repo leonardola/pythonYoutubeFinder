@@ -75,7 +75,10 @@ class Database:
 
     def set_video_downloaded(self, video_id):
 
-        self.videos.update({"id":video_id},{"$set":{"downloaded":True}})
+        self.videos.update(
+            {"id":video_id},
+            {"$set":{"downloaded":True}}
+        )
 
     def set_video_download_data(self, video_id, download_data):
         self.videos.update(
