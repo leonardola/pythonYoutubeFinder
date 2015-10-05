@@ -3,12 +3,14 @@
 <head>
     {% block head %}
 
-    <title>{% block title %}{% endblock %} - My Webpage</title>
-    <div>
-        <a href="{{url_for('downloading_page')}}"><div>Downloading</div></a>
+        <title>{% block title %}{% endblock %} - My Webpage</title>
         <script src="{{url_for('static', filename='jquery.js')}}"></script>
         <script src="{{url_for('static', filename='ejs.js')}}"></script>
-    </div>
+
+        <div>
+            <a href="{{url_for('downloading_page')}}"><div>Downloading</div></a>
+            <a href="{{url_for('channels_page')}}"><div>Channels</div></a>
+        </div>
     {% endblock %}
 </head>
 <body>

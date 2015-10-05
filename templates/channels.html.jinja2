@@ -1,0 +1,61 @@
+{% extends "header.html.jinja2" %}
+
+
+{% block title %}Downloading{% endblock %}
+{% block head %}
+    {{ super() }}
+    {% block javascript %}
+        <script src="{{url_for('static', filename='js/channels.js')}}"></script>
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/channels.css')}}">
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div id="Channels">
+        <div id="Add_new_channel_button" class="box">
+            <img class="add_channel_image" src="{{ url_for('static',filename='images/plus.jpeg') }}">
+        </div>
+
+        {% for channel in channels %}
+            <a>
+                <div class="box" channel_id="{{ channel['id'] }}">
+                    {{ channel['name'] }}
+                    <div class="channel_image_wrapper">
+                        <img src="{{ channel['image'] }}">
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+
+
+        <div id="New_channel">
+            <label>Name:</label>
+            <input class="new_channel_name"></input>
+            <input class="search_channel" type="button" value="Search">
+
+            <select class="channels_list">
+
+            </select>
+            <div class="channel_data">
+                <div class="channel_description">
+                    Description
+                </div>
+                <div class="channel_image_wrapper">
+                    <img src="#">
+                </div>
+                <div>
+                    <label>Day to start Downloading from:</label>
+                    <input class="start_date" type="date">
+                </div>
+                <div>
+                    <label>Unwanted Words</label>
+                    <input class="unwanted_words" type="text" placeholder="word1;word2">
+                </div>
+            </div>
+            <input class="add_channel" type="button" value="Add">
+
+        </div>
+    </div>
+
+{% endblock %}

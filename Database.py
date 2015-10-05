@@ -18,9 +18,10 @@ class Database:
 
     #channel
 
-    def save_channel(self, name, date, id, unwanted_words):
+    #name, date, id, unwanted_words
+    def save_channel(self, data):
 
-        addedChannel = self.channels.insert({"name": name, "date": date,"id": id, "unwanted_words":unwanted_words})
+        addedChannel = self.channels.insert(data)
 
         return addedChannel
 

@@ -3,6 +3,7 @@ __author__ = 'leonardoalbuquerque'
 import atexit
 from apscheduler.scheduler import Scheduler
 from Main import Main
+import thread
 
 class DownloadScheduler():
     def __init__(self, socketio):
@@ -11,7 +12,8 @@ class DownloadScheduler():
         cron = Scheduler(daemon=True)
         # Explicitly kick off the background thread
         cron.start()
-        main.start()
+        thread.start_new_thread(main.start, ())
+
 
         @cron.interval_schedule(hours=2)
         def job_function():

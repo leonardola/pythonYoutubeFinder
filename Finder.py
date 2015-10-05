@@ -116,3 +116,25 @@ class Finder:
         print("No channel was found\n")
 
         return False
+
+
+    def get_channels_with_name(self, channel_name):
+        search_response = self.youtube.search().list(
+            q=channel_name,
+            part="snippet",
+            type="channel"
+        ).execute()
+
+        return search_response.get("items", [])
+
+    def get_channel_data(self, channel_id):
+        search_response = self.youtube.search().list(
+            q=channel_id,
+            part="snippet",
+            type="channel"
+        ).execute()
+
+        channel_data = search_response.get("items", [])[0]
+
+        return channel_data
+

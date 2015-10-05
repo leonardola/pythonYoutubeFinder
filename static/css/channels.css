@@ -1,0 +1,43 @@
+
+#Channels .box{
+    float: left;
+    height: 260px;
+    width: 239px;
+    border: black 1px solid;
+    margin: 15px;
+}
+
+#Channels .channel_image_wrapper{
+    width: 180px;
+    height: 180px;
+    float: right;
+}
+#Channels .channel_image_wrapper img{
+    width: 180px;
+    height: 180px;
+}
+
+#Add_new_channel_button{
+    position: relative;
+}
+
+#Add_new_channel_button img{
+    width: 200px;
+    position: absolute;
+    top: 25px;
+    left: 21px;
+}
+
+#New_channel{
+    position: absolute;
+    border: 1px solid black;
+    top: 200px;
+    left: 559px;
+    background-color: white;
+    display: none;
+}
+#New_channel .channel_description{
+    float:left;
+    width: 200px;
+    height: 180px;
+}
