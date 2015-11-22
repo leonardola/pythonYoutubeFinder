@@ -10,7 +10,6 @@
 #Channels .channel_image_wrapper{
     width: 180px;
     height: 180px;
-    float: right;
 }
 #Channels .channel_image_wrapper img{
     width: 180px;
@@ -23,21 +22,52 @@
 
 #Add_new_channel_button img{
     width: 200px;
-    position: absolute;
+    /*position: absolute;*/
     top: 25px;
     left: 21px;
 }
 
+#New_channel .image_wrapper{
+    height: 324px;
+}
+
 #New_channel{
+    display: none;
     position: absolute;
-    border: 1px solid black;
-    top: 200px;
-    left: 559px;
-    background-color: white;
+}
+
+#New_channel .center{
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#New_channel .channels_list_wrapper{
+    min-height: 43px;
+    padding-top: 7px;
+}
+
+#New_channel .channels_list{
     display: none;
 }
-#New_channel .channel_description{
-    float:left;
-    width: 200px;
-    height: 180px;
+
+#New_channel .input_wrapper{
+    margin-bottom: 10px;
+}
+
+.channel_box_wrapper{
+    height: 503px;
+    margin-bottom: 24px;
+}
+
+.channel_image{
+    width: 100%;
+}
+
+.channel_description{
+    height: 140px;
+}
+
+.caption h3{
+    height:53px;
 }

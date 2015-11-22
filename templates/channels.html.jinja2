@@ -11,30 +11,85 @@
 {% endblock %}
 
 {% block content %}
-    <div id="Channels">
-        <div id="Add_new_channel_button" class="box">
-            <img class="add_channel_image" src="{{ url_for('static',filename='images/plus.jpeg') }}">
-        </div>
 
-        {% for channel in channels %}
-            <a>
-                <div class="box" channel_id="{{ channel['id'] }}">
-                    {{ channel['name'] }}
-                    <div class="channel_image_wrapper">
-                        <img src="{{ channel['image'] }}">
+
+    <div id="Add_new_channel_button" class="col-sm-4 col-md-2 center">
+        <div class="thumbnail">
+            <div class="image_wrapper">
+                <img class="add_channel_image" src="{{ url_for('static',filename='images/plus.jpeg') }}">
+            </div>
+        </div>
+    </div>
+
+    {% for channel in channels %}
+        <a class="box" channel_id="{{ channel['id'] }}">
+            <div class="col-sm-4 col-md-2 channel_box_wrapper">
+                <div class="thumbnail">
+                    <div class="image_wrapper">
+                        <img class="channel_image channel_image" src="{{ channel['image'] }}" alt="...">
+                    </div>
+                    <div class="caption">
+                        <h3>{{ channel['name'] }}</h3>
+                        <p class="channel_description">{{ channel['description'] }}</p>
+                        <p>
+                            <input class="btn btn-danger center-block add_channel" type="button" value="Remove">
+                        </p>
                     </div>
                 </div>
-            </a>
-        {% endfor %}
+            </div>
+        </a>
 
+    {% endfor %}
 
 
         <div id="New_channel">
+            <div class="row">
+                <div class="col-sm-6 col-md-3 center">
+                    <div class="thumbnail">
+                        <div class="input-group">
+                            <input type="text" class="form-control new_channel_name" placeholder="Search for channel">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default search_channel" type="button">Go!</button>
+                            </span>
+                        </div>
+
+                        <div class="channels_list_wrapper">
+                            <select class="channels_list form-control input-sm"></select>
+                        </div>
+                        <div class="image_wrapper">
+                            <img class="channel_image" src="{{url_for('static', filename='images/defaultAvatar.png')}}" alt="...">
+                        </div>
+                        <div class="caption">
+                            <h3></h3>
+                            <p class="channel_description"></p>
+
+                        </div>
+
+                        <div class="input_wrapper">
+                            <label>Day to start Downloading from:</label>
+                            <input class="form-control start_date" type="date">
+                        </div>
+                        <div class="input_wrapper">
+                            <label>Unwanted Words</label>
+                            <input class="form-control unwanted_words" type="text" placeholder="word1;word2">
+                        </div>
+
+                        <p>
+                            <input class="btn btn-primary center-block add_channel" type="button" value="Add">
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {# <div id="New_channel">
             <label>Name:</label>
             <input class="new_channel_name"></input>
-            <input class="search_channel" type="button" value="Search">
+            <input class="search_channel btn" type="button" value="Search">
 
-            <select class="channels_list">
+            <select class="channels_list form-control input-sm">
 
             </select>
             <div class="channel_data">
@@ -55,7 +110,7 @@
             </div>
             <input class="add_channel" type="button" value="Add">
 
-        </div>
+        </div> #}
     </div>
 
 {% endblock %}

@@ -9,13 +9,22 @@ $(document).ready(function () {
         $("#New_channel").hide();
     });
 
-    $("#New_channel").click(function (event) {
-        event.stopPropagation();
+
+    $("#New_channel .search_channel").click(function () {
+        searchChannel();
     });
 
-    $("#Channels .search_channel").click(function () {
-
+    $(document).keypress(function(e) {
+        if(e.which == 13) {
+            searchChannel();
+        }
+    });
+    function searchChannel(){
         var channelName = $("#New_channel .new_channel_name").val();
+
+        if(!channelName || !$("#New_channel").is(":visible")){
+            return;
+        }
 
         $.get("/channels/getDataByName/"+channelName, function (data) {
             var channels = data.data;
@@ -36,29 +45,36 @@ $(document).ready(function () {
 
                 html +=
                     '<option ' +
-                            'image_src="'+image+'" ' +
-                            'channel_id="'+channelId+'" ' +
-                            'channel_description="'+channelDescription+'" ' +
-                            'channel_id="'+channelId+'"'+
-                            'channel_name="'+channelName+'">'+
-                        channelName+
+                    'image_src="'+image+'" ' +
+                    'channel_id="'+channelId+'" ' +
+                    'channel_description="'+channelDescription+'" ' +
+                    'channel_id="'+channelId+'"'+
+                    'channel_name="'+channelName+'">'+
+                    channelName+
                     '</option>'
             }
 
             $("#New_channel .channels_list").html(html);
             $("#New_channel .channels_list").show();
 
-            $("#Channels .channels_list").change();
+            $("#New_channel .channels_list").change();
 
         });
+    }
+
+    $("#New_channel .thumbnail").click(function (event) {
+        event.stopPropagation();
     });
 
-    $("#Channels .channels_list").change(function () {
+    $("#New_channel .channels_list").change(function () {
         var selectedOption = $(this).find(":selected");
 
         $("#New_channel img").attr("src",selectedOption.attr("image_src"));
 
         var description = getSelectedChannelDescripton(selectedOption);
+        var channelName = getSelectedChannelName(selectedOption);
+
+        $("#New_channel h3").html(channelName);
         $("#New_channel .channel_description").html(description);
 
     });
@@ -69,9 +85,13 @@ $(document).ready(function () {
         return description || "No description provided";
     }
 
+    function getSelectedChannelName(selectedOption){
+        return selectedOption.attr("channel_name");
+    }
+
 
     $("#New_channel .add_channel").click(function () {
-        var selectedChannel = $("#Channels .channels_list").find(":selected");
+        var selectedChannel = $("#New_channel .channels_list").find(":selected");
 
         var data =
         {

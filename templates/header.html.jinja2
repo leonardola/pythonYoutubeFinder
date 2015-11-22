@@ -1,25 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     {% block head %}
+        <title>{% block title %}{% endblock %}</title>
 
-        <title>{% block title %}{% endblock %} - My Webpage</title>
+        <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{url_for('static', filename='css/header.css')}}" rel="stylesheet">
+
         <script src="{{url_for('static', filename='jquery.js')}}"></script>
         <script src="{{url_for('static', filename='ejs.js')}}"></script>
 
-        <div>
-            <a href="{{url_for('downloading_page')}}"><div>Downloading</div></a>
-            <a href="{{url_for('channels_page')}}"><div>Channels</div></a>
-        </div>
     {% endblock %}
 </head>
-<body>
 
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Youtube Finder</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="{{url_for('downloading_page')}}">Downloads</a></li>
+                <li><a href="{{url_for('channels_page')}}">Channels</a></li>
+            </ul>
+        </div>
+    </nav>
 <div id="content">{% block content %}{% endblock %}</div>
+
+</body>
+
 <div id="footer">
     {% block footer %}
 
     {% endblock %}
 </div>
-</body>
+
 </html>
