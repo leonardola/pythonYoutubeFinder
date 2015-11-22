@@ -39,25 +39,29 @@ def channels_page():
 
 
 @app.route("/channels/getDataByName/<channel_name>")
-def getChannelDataByName(channel_name):
+def get_channel_data_by_name(channel_name):
     data = finder.get_channels_with_name(channel_name)
 
     return jsonify(data=data)
 
 
 @app.route("/getChannelData/<channel_id>")
-def getChannelData(channel_id):
+def get_channel_data(channel_id):
     finder.get_channel_data(channel_id)
 
     return "ok"
 
 @app.route("/channel/add", methods=["GET","POST"])
-def addChannel():
+def add_channel():
     requerst_type = request.headers.get('content-type')
-    data = request.json#getRequestData()
+    data = request.json
     database.save_channel(data)
     return "ok"
 
+@app.route("/channel/remove/<channel_id>")
+def remove_channel(channel_id):
+    database.delete_channel_by_id(channel_id)
+    return "ok"
 
 
 @socketio.on('my event')

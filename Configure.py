@@ -10,7 +10,7 @@ finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
 def delete_channel():
     channel_name = raw_input("Type the name of channel to delete: ")
 
-    database.delete_channel(channel_name)
+    database.delete_channel_by_name(channel_name)
 
     print ("Channel deleted")
 

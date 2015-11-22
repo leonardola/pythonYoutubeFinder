@@ -1,21 +1,3 @@
-
-#Channels .box{
-    float: left;
-    height: 260px;
-    width: 239px;
-    border: black 1px solid;
-    margin: 15px;
-}
-
-#Channels .channel_image_wrapper{
-    width: 180px;
-    height: 180px;
-}
-#Channels .channel_image_wrapper img{
-    width: 180px;
-    height: 180px;
-}
-
 #Add_new_channel_button{
     position: relative;
 }

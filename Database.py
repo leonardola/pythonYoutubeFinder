@@ -26,12 +26,14 @@ class Database:
         return addedChannel
 
     def get_channels_list(self):
-
         return self.channels.find()
 
-    def delete_channel(self,channelName):
+    def delete_channel_by_name(self, channel_name):
+        self.channels.remove({'name':channel_name})
 
-        self.channels.remove({'name':channelName})
+    def delete_channel_by_id(self, channel_id):
+        self.channels.remove({'id':channel_id})
+
 
     def add_channel_unwanted_word(self,channelName,unwanted_words):
 

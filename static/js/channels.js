@@ -106,14 +106,11 @@ $(document).ready(function () {
         $.ajax({
             url: "/channel/add",
             type: "POST",
-            contentType:"application/json",
-            dataType: "json",
+            contentType: "application/json",
             data: JSON.stringify(data),
-            success: function (data) {
-                alert("success");
-            }
+        }).success(function () {
+            location.reload();
         });
-        //$.ajax("/channel/add",data, );
     });
 
     function getUnwantedWords(){
@@ -121,4 +118,14 @@ $(document).ready(function () {
 
         return words.split(";");
     }
+
+    $("#Channels .remove_channel").click(function () {
+        var channelBox = $(this).closest(".box");
+
+        var channelId = channelBox.attr('channel_id');
+
+        $.get("/channel/remove/"+channelId, function () {
+            channelBox.remove();
+        });
+    });
 });
