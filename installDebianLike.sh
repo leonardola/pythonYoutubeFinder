@@ -8,6 +8,9 @@ then
     echo"updateing apt"
     apt-get update
 
+    echo "installing crontab"
+    apt-get install crontab
+
     echo "installing python"
     apt-get install python
 
@@ -25,4 +28,16 @@ then
 
     echo "changing permissions"
     chmod -R 777 ./
+
+    SCRIPTPATH=$(pwd -P)
+    PYTHONPATH=$(which python)
+
+    #write out current crontab
+    crontab -l > mycron
+    #echo new cron into cron file
+    echo "@reboot" $PYTHONPATH $SCRIPTPATH"/webMain.py" > mycron
+    #install new cron file
+    crontab mycron
+    rm mycron
+
 fi
