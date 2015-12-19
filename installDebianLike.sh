@@ -4,6 +4,10 @@ read -p "Are you sure running as Root and inside the pythonYoutubeFinder folder?
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+
+    echo"updateing apt"
+    apt-get update
+
     echo "installing python"
     apt-get install python
 
