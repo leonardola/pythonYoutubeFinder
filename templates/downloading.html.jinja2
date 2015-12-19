@@ -4,21 +4,31 @@
 {% block title %}Downloading{% endblock %}
 {% block head %}
 {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/downloading.css')}}">
+
     {% block javascript %}
         <script src="{{url_for('static', filename='socketio.js')}}"></script>
         <script src="{{url_for('static', filename='downloading.js')}}"></script>
-
     {% endblock %}
 {% endblock %}
 
 {% block content %}
     <div id="Downloading">
         {% for video in videos %}
-            <div class="downloading_video" video_id="{{video['id']}}">
-                <div>{{video['tittle']}}</div>
-                <div class="speed">Waiting</div>
-                <progress max="100" class="progress" value="0" hidden></progress>
-                <div class="deleteVideo">-</div>
+
+            <div class="panel panel-default downloading_video" video_id="{{video['id']}}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{video['tittle']}}</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            0%
+                        </div>
+                    </div>
+                    <div class="speed">Waiting</div>
+                    <div class="deleteVideo">-</div>
+                </div>
             </div>
         {% endfor %}
     </div>

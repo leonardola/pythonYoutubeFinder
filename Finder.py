@@ -64,7 +64,7 @@ class Finder:
     """search for given channel without the unwanted words"""
     def search(self,channelId,unwanted_words,starting_date):
 
-        #adds a - to every unwanted word its a not logical operator for google
+        #adds a - to every unwanted word. its a logical not operator for google
         if unwanted_words:
             unwanted_words = [" -" + s for s in unwanted_words]
             unwanted_words = "a|e|i|o|u " + "".join(unwanted_words)
@@ -73,7 +73,7 @@ class Finder:
 
         try:
             return self.youtube_search(
-                    q = unwanted_words,
+                    #q = unwanted_words,
                     channelId = channelId,
                     type = "video",
                     part = "snippet",

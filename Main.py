@@ -42,7 +42,7 @@ class Main:
 
             #download each video
             for video in videos:
-                download_video(video['id'])
+                self.download_video(video['id'])
 
             #sets the starting download date as the last video of the channel
             if videos:

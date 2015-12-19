@@ -9,11 +9,17 @@ class Youtube_dl_interface:
     def __init__(self, socketio):
         self.socketio = socketio
         self.video_id = False
+        self.ydl = False
+        self.already_stoped = False
 
     def progress_hook(self, data):
 
         database.set_video_download_data(self.video_id, data)
         self.socketio.emit('download status changed', {'videoId':self.video_id, 'downloadData': data})
+
+        if not self.already_stoped:
+            self.already_stoped = True
+            del self.ydl
 
         return
 
@@ -28,7 +34,11 @@ class Youtube_dl_interface:
             'outtmpl': download_path+'%(title)s-%(id)s.%(ext)s',
              'progress_hooks': [self.progress_hook]
         }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(['http://www.youtube.com/watch?v=' + video_id])
+
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as self.ydl:
+                self.ydl.download(['http://www.youtube.com/watch?v=' + video_id])
+        except:
+            return
 
         return

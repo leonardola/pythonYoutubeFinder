@@ -53,7 +53,6 @@ def get_channel_data(channel_id):
 
 @app.route("/channel/add", methods=["GET","POST"])
 def add_channel():
-    requerst_type = request.headers.get('content-type')
     data = request.json
     database.save_channel(data)
     return "ok"
@@ -75,5 +74,5 @@ def getRequestData():
 
 if __name__ == '__main__':
     #DownloadScheduler(socketio)
-    app.debug = True
-    socketio.run(app, use_reloader=True)
+    #app.debug = True
+    socketio.run(app, use_reloader=True, host='0.0.0.0')

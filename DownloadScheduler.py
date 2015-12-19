@@ -10,7 +10,6 @@ class DownloadScheduler():
         main = Main(socketio)
 
         cron = Scheduler(daemon=True)
-        # Explicitly kick off the background thread
         cron.start()
         thread.start_new_thread(main.start, ())
 

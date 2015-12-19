@@ -21,6 +21,8 @@ class Database:
     #name, date, id, unwanted_words
     def save_channel(self, data):
 
+        data['date'] += "T19:00:00+00:00"
+
         addedChannel = self.channels.insert(data)
 
         return addedChannel
