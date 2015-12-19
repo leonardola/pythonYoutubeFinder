@@ -32,6 +32,7 @@ then
     SCRIPTPATH=$(pwd -P)
     PYTHONPATH=$(which python)
 
+    echo "adding crontab entry"
     #write out current crontab
     crontab -l > mycron
     #echo new cron into cron file

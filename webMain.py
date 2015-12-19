@@ -73,6 +73,6 @@ def getRequestData():
     return {k:v for k,v in imutableData.items()}
 
 if __name__ == '__main__':
-    #DownloadScheduler(socketio)
+    DownloadScheduler(socketio)
     #app.debug = True
     socketio.run(app, use_reloader=True, host='0.0.0.0')
