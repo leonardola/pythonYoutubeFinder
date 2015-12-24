@@ -73,7 +73,7 @@ class Finder:
 
         try:
             return self.youtube_search(
-                    #q = unwanted_words,
+                    q = unwanted_words,
                     channelId = channelId,
                     type = "video",
                     part = "snippet",

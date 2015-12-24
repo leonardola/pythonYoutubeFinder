@@ -29,16 +29,22 @@ then
     echo "changing permissions"
     chmod -R 777 ./
 
+    echo"installing pip packages"
+    pip install requests
+    pip install --upgrade google-api-python-client
+    pip install youtube-dl
+    pip install flask
+    pip install apscheduler==2.1.2
+    pip install flask-socketio
+    pip install pymongo
+    pip install eventlet
+    pip install gevent-websocket
+
     SCRIPTPATH=$(pwd -P)
     PYTHONPATH=$(which python)
 
-    echo "adding crontab entry"
-    #write out current crontab
-    crontab -l > mycron
+    echo "add this line to crontab:"
     #echo new cron into cron file
-    echo "@reboot" $PYTHONPATH $SCRIPTPATH"/webMain.py" > mycron
-    #install new cron file
-    crontab mycron
-    rm mycron
+    sudo echo "@reboot" $PYTHONPATH $SCRIPTPATH"/webMain.py"
 
 fi
