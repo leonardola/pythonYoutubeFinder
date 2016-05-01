@@ -35,6 +35,8 @@ class Main:
             #search videos
             videos = self.finder.search(channel["id"],channel["unwanted_words"],channel['date'])
 
+            if not videos:
+                continue
             #this allow to save all videos before downloading so if
             #anything happens while downloading it can recover
             for video in videos:
