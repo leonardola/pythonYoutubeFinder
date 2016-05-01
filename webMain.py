@@ -66,6 +66,7 @@ def remove_channel(channel_id):
 
 @socketio.on('my event')
 def handle_my_custom_event(json):
+    print "connect with socketio"
     emit('my response', json)
 
 
