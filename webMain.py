@@ -2,13 +2,14 @@ __author__ = 'leonardoalbuquerque'
 
 from flask import Flask, render_template
 from flask.ext.socketio import SocketIO
-from flask.ext.socketio import send, emit
+from flask.ext.socketio import emit
 from flask import jsonify
 from flask import request
 
 from Database import Database
 from DownloadScheduler import DownloadScheduler
 from Finder import Finder
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
@@ -16,9 +17,9 @@ database = Database()
 finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
 
 @app.route('/')
-def hello():
-    return render_template('home.html.jinja2')
+def home():
 
+    return render_template('home.html.jinja2', download_path = database.get_download_path())
 
 @app.route('/downloading')
 def downloading_page():
@@ -71,6 +72,18 @@ def handle_my_custom_event(json):
 def getRequestData():
     imutableData = request.form
     return {k:v for k,v in imutableData.items()}
+
+@app.route('/shutdown')
+def shutdown():
+    socketio.stop()
+    return 'Server shutting down...'
+
+@app.route('/updateDownloadPath', methods = ["POST"])
+def update_download_path():
+    data = getRequestData()
+
+    database.set_download_path(data['newDownloadPath'])
+    return "ok"
 
 if __name__ == '__main__':
     DownloadScheduler(socketio)

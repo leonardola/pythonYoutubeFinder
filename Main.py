@@ -60,16 +60,16 @@ class Main:
                 print "%s\n" % (video['tittle'])
 
     #donwload a video then set it as downloaded
-    def download_video(self,videoId):
+    def download_video(self,video_id):
 
-        if not self.database.video_was_downloaded(videoId):
+        if not self.database.video_was_downloaded(video_id):
 
-            self.youtube_dl.download(videoId,self.database.get_download_path())
+            self.youtube_dl.download(video_id,self.database.get_download_path())
             print("Downloaded")
         else:
             print("Already downloaded")
 
-        self.database.set_video_downloaded(videoId)
+        self.database.set_video_downloaded(video_id)
 
     #downloads all the videso that failed to download last time
     def download_failed_videos(self):
@@ -80,6 +80,6 @@ class Main:
             print "downloading videos that failed download"
 
         for video in videos:
-            print video['tittle'] + "\n"
+            #print video['tittle'] + "\n"
             self.download_video(video['id'])
 

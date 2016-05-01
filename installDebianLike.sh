@@ -9,13 +9,13 @@ then
     apt-get update
 
     echo "installing crontab"
-    apt-get install crontab
+    apt-get -y install crontab
 
     echo "installing python"
-    apt-get install python
+    apt-get -y install python
 
     echo "installing python dev"
-    apt-get install python-pip python-dev build-essential
+    apt-get -y install python-pip python-dev build-essential
 
     echo "updating pip"
     sudo pip install --upgrade pip
@@ -24,7 +24,7 @@ then
     pip install --upgrade virtualenv
 
     echo "installing mongodb"
-    apt-get install mongodb
+    apt-get -y install mongodb
 
     echo "changing permissions"
     chmod -R 777 ./
