@@ -15,6 +15,7 @@ class DownloadScheduler():
 
         cron = Scheduler(daemon=True)
         cron.start()
+
         thread.start_new_thread(main.start, ())
 
 

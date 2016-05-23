@@ -48,7 +48,7 @@ class Main:
 
             #sets the starting download date as the last video of the channel
             if videos:
-                last_video = videos[-1]
+                last_video = videos[0]
 
                 self.database.change_channel_date(channel["name"],last_video["published_at"])
 
