@@ -96,5 +96,5 @@ def search_videos():
 
 if __name__ == '__main__':
     downloadScheduler = DownloadScheduler(socketio)
-    app.debug = True
+    #app.debug = True
     socketio.run(app, use_reloader=True, host='0.0.0.0')
