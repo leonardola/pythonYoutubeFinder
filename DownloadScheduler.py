@@ -11,18 +11,21 @@ class DownloadScheduler():
     logging.basicConfig()
 
     def __init__(self, socketio):
-        main = Main(socketio)
+        self.main = Main(socketio)
+
+        self.execute_now()
 
         cron = Scheduler(daemon=True)
         cron.start()
 
-        thread.start_new_thread(main.start, ())
-
-
         @cron.interval_schedule(hours=1)
         def job_function():
             # Do your work here
-            main.start()
+            self.main.start()
 
         # Shutdown your cron thread if the web process is stopped
         atexit.register(lambda: cron.shutdown(wait=False))
+
+    def execute_now(self):
+        thread.start_new_thread(self.main.start, ())
+

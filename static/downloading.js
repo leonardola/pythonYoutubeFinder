@@ -30,4 +30,10 @@ $(document).ready(function () {
             parentElement.remove();
         });
     });
+
+    $(".searchVideos").click(function () {
+        $.get("/search", function () {
+            location.reload();
+        })
+    });
 });

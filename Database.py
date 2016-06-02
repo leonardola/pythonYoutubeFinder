@@ -135,3 +135,18 @@ class Database:
             return download_path['download_path']
 
         return False
+
+    def get_last_downloaded_videos(self):
+
+        channels = self.get_channels_list();
+
+        videos = []
+
+        for channel in channels:
+            last_downloaded_video = self.channels.find_one({"channel_id": ObjectId(channel['_id'])})
+
+            last = last_downloaded_video.next()
+            videos.append(last)
+
+        return videos
+

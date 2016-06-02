@@ -26,6 +26,8 @@ def downloading_page():
 
     downloading_videos = database.get_not_downloaded_videos()
 
+    #database.get_last_downloaded_videos()
+
     return render_template('downloading.html.jinja2', videos = downloading_videos)
 
 @app.route("/video/delete/<video_id>", methods=["POST"])
@@ -86,7 +88,13 @@ def update_download_path():
     database.set_download_path(data['newDownloadPath'])
     return "ok"
 
+@app.route('/search')
+def search_videos():
+    downloadScheduler.execute_now()
+
+    return "ok"
+
 if __name__ == '__main__':
-    DownloadScheduler(socketio)
-    #app.debug = True
+    downloadScheduler = DownloadScheduler(socketio)
+    app.debug = True
     socketio.run(app, use_reloader=True, host='0.0.0.0')
