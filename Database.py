@@ -1,6 +1,7 @@
 __author__ = 'leonardoalbuquerque'
 
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import time
 
 class Database:
@@ -138,15 +139,14 @@ class Database:
 
     def get_last_downloaded_videos(self):
 
-        channels = self.get_channels_list();
+        channels = self.get_channels_list()
 
         videos = []
 
         for channel in channels:
-            last_downloaded_video = self.channels.find_one({"channel_id": ObjectId(channel['_id'])})
+            video = self.videos.find_one({"channel_id": channel['_id'], "downloaded": True})
 
-            last = last_downloaded_video.next()
-            videos.append(last)
+            if video:
+                videos.append(video)
 
         return videos
-

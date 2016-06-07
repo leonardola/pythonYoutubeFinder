@@ -1,0 +1,12 @@
+.progress-bar{
+    min-width: 20px;
+}
+
+.centered{
+    text-align: center;
+}
+
+.searchVideos{
+    width: 300px;
+    height: 60px;
+}

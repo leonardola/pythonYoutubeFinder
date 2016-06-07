@@ -1,0 +1,38 @@
+from flask.ext.socketio import emit
+from flask import render_template
+from Controller import socketio
+from DownloadScheduler import DownloadScheduler
+from Controller import app, database
+
+downloadScheduler = DownloadScheduler(socketio)
+
+@app.route('/downloading')
+def downloading_page():
+
+    downloading_videos = database.get_not_downloaded_videos()
+
+    downloaded_videos = database.get_last_downloaded_videos()
+
+    return render_template('downloading.html.jinja2',
+                           videos = downloading_videos,
+                           downloaded_videos = downloaded_videos)
+
+@app.route("/video/delete/<video_id>", methods=["POST"])
+def delete_video(video_id):
+    database.set_video_downloaded(video_id)
+    return "ok"
+
+@app.route('/search')
+def search_videos():
+    downloadScheduler.execute_now()
+    return 'ok'
+
+@app.route('/shutdown')
+def shutdown():
+    socketio.stop()
+    return 'Server shutting down...'
+
+@socketio.on('my event')
+def handle_my_custom_event(json):
+    print "connect with socketio"
+    emit('my response', json)

@@ -13,8 +13,11 @@
 {% endblock %}
 
 {% block content %}
-    <button class="searchVideos">Search Videos</button>
+    <div class="text-center">
+        <button class="searchVideos btn btn-primary ">Search Now</button>
+    </div>
 
+    <h2 class="centered">Downloading</h2>
     <div id="Downloading">
         {% for video in videos %}
 
@@ -33,6 +36,18 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+
+    <h2 class="centered">Already Downloaded</h2>
+    <div id="Downloaded">
+        {% for video in downloaded_videos %}
+            <div class="panel panel-success downloading_video" video_id="{{video['id']}}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{video['tittle']}}</h3>
+                </div>
+            </div>
+        {% endfor %}
+
     </div>
 
 {% endblock %}
