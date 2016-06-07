@@ -14,7 +14,6 @@ class Youtube_dl_interface:
 
     def progress_hook(self, data):
 
-        database.set_video_download_data(self.video_id, data)
         self.socketio.emit('download status changed', {'videoId':self.video_id, 'downloadData': data})
 
         if not self.already_stoped:

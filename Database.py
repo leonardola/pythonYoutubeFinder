@@ -1,6 +1,7 @@
 __author__ = 'leonardoalbuquerque'
 
 from pymongo import MongoClient
+import pymongo
 from bson.objectid import ObjectId
 import time
 
@@ -72,7 +73,7 @@ class Database:
         video['channel_id'] = channel_id
 
         if not self.videos.find_one({"id":video['id']}):
-            video['add_date'] = time.strftime("%d/%m/%Y-%H:%M:%S")
+            video['add_date'] = self.get_current_date()
             self.videos.insert(video)
 
             return False
@@ -83,7 +84,7 @@ class Database:
 
         self.videos.update(
             {"id":video_id},
-            {"$set":{"downloaded":True}}
+            {"$set":{"downloaded":True, "download_date": self.get_current_date()}}
         )
 
     def set_video_download_data(self, video_id, download_data):
@@ -144,9 +145,12 @@ class Database:
         videos = []
 
         for channel in channels:
-            video = self.videos.find_one({"channel_id": channel['_id'], "downloaded": True})
+            video = self.videos.find_one({"channel_id": channel['_id'], "downloaded": True}, sort=[("download_date", pymongo.DESCENDING)])
 
             if video:
                 videos.append(video)
 
         return videos
+
+    def get_current_date(self):
+        return time.strftime("%d/%m/%Y-%H:%M:%S")
