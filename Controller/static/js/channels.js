@@ -116,6 +116,10 @@ $(document).ready(function () {
     function getUnwantedWords(){
         var words = $("#New_channel .unwanted_words").val();
 
+        if(!words){
+            return [];
+        }
+
         return words.split(";");
     }
 
