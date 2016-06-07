@@ -2,7 +2,6 @@ __author__ = 'leonardoalbuquerque'
 
 from pymongo import MongoClient
 import pymongo
-from bson.objectid import ObjectId
 import time
 
 class Database:
@@ -17,8 +16,6 @@ class Database:
         self.videos = database.videos
         self.configuration = database.configuration
 
-
-    #channel
 
     #name, date, id, unwanted_words
     def save_channel(self, data):
