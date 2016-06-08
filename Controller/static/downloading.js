@@ -33,7 +33,9 @@ $(document).ready(function () {
 
     $(".searchVideos").click(function () {
         $.get("/search", function () {
-            location.reload();
+            setTimeout(function () {
+                location.reload();
+            }, 2000)
         })
     });
 });
