@@ -9,7 +9,8 @@ class Main:
     def __init__(self, socketio):
 
         self.socketio = socketio
-        socketio.emit('my event', {'data': 42})
+        #remove this line
+        #socketio.emit('my event', {'data': 42})
 
         #start the finder
         self.finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
@@ -60,6 +61,9 @@ class Main:
 
             for video in videos:
                 print "%s\n" % (video['tittle'])
+
+        self.database.set_last_search_date()
+
 
     #donwload a video then set it as downloaded
     def download_video(self,video_id):

@@ -151,3 +151,12 @@ class Database:
 
     def get_current_date(self):
         return time.strftime("%d/%m/%Y-%H:%M:%S")
+
+    def set_last_search_date(self):
+        self.configuration.update({"name":"last_search_date"},{"last_search_date":self.get_current_date(),"name":"last_search_date"},upsert=True)
+
+    def get_last_search_date(self):
+
+        last_search_date = self.configuration.find_one({"name":"last_search_date"})
+
+        return last_search_date['last_search_date']

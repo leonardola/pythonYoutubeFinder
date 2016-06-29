@@ -10,12 +10,13 @@ downloadScheduler = DownloadScheduler(socketio)
 def downloading_page():
 
     downloading_videos = database.get_not_downloaded_videos()
-
     downloaded_videos = database.get_last_downloaded_videos()
+    last_search_date = database.get_last_search_date()
 
     return render_template('downloading.html.jinja2',
                            videos = downloading_videos,
-                           downloaded_videos = downloaded_videos)
+                           downloaded_videos = downloaded_videos,
+                           last_search_date = last_search_date)
 
 @app.route("/video/delete/<video_id>", methods=["POST"])
 def delete_video(video_id):
