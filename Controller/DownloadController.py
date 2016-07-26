@@ -25,6 +25,7 @@ def delete_video(video_id):
 
 @app.route('/search')
 def search_videos():
+    print "started to search videos"
     downloadScheduler.execute_now()
     return 'ok'
 
