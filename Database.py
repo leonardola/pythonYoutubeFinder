@@ -1,20 +1,23 @@
 __author__ = 'leonardoalbuquerque'
 
-from pymongo import MongoClient
-import pymongo
+from blitzdb import Document
+from blitzdb import FileBackend
+from Entity import Channel, Configuration
+
 import time
+
+#new db
+from CodernityDB.database import Database
 
 class Database:
 
     def __init__(self):
 
-        client = MongoClient("127.0.0.1")
+        self.database = FileBackend("db")
 
-        database = client.youtubeDownloader
-
-        self.channels = database.channels
-        self.videos = database.videos
-        self.configuration = database.configuration
+        # self.channels = database.filter(Channel)
+        # self.videos = database.filter()
+        # self.configuration = database.configuration
 
 
     #name, date, id, unwanted_words
@@ -22,7 +25,7 @@ class Database:
 
         data['date'] += "T19:00:00+00:00"
 
-        addedChannel = self.channels.insert(data)
+        addedChannel = self.database.save(Channel, Channel(data))
 
         return addedChannel
 
@@ -124,14 +127,21 @@ class Database:
 
     def set_download_path(self,path):
 
-        self.configuration.update({"name":"download_path"},{"download_path":path,"name":"download_path"},upsert=True)
+        downlod_path = self.get_download_path()
+
+        if not downlod_path:
+            self.database.save(Configuration.Configuration({'name': 'download_path', 'download_path':path}))
+        else:
+            downlod_path.download_path = path
+
+        self.database.commit()
 
     def get_download_path(self):
 
-        download_path = self.configuration.find_one({"name":"download_path"})
+        download_path = self.database.get(Configuration.Configuration, {'name': 'download_path'})
 
         if download_path:
-            return download_path['download_path']
+            return download_path.download_path
 
         return False
 
