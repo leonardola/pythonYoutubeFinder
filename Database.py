@@ -1,6 +1,5 @@
 __author__ = 'leonardoalbuquerque'
 
-from blitzdb import Document
 from blitzdb import FileBackend
 from Entity import Channel, Configuration
 
