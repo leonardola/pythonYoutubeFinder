@@ -5,11 +5,11 @@ from Entity import Channel, Configuration
 
 import time
 
-#new db
+# new db
 from CodernityDB.database import Database
 
-class Database:
 
+class Database:
     def __init__(self):
 
         self.database = FileBackend("db")
@@ -18,60 +18,63 @@ class Database:
         # self.videos = database.filter()
         # self.configuration = database.configuration
 
-
-    #name, date, id, unwanted_words
+    # name, date, id, unwanted_words
     def save_channel(self, data):
 
         data['date'] += "T19:00:00+00:00"
 
-        addedChannel = self.database.save(Channel, Channel(data))
+        addedChannel = self.database.save(Channel.Channel(data))
+        self.database.commit()
 
         return addedChannel
 
     def get_channels_list(self):
-        return self.channels.find()
+        return self.database.filter(Channel.Channel, {})
 
     def delete_channel_by_name(self, channel_name):
-        self.channels.remove({'name':channel_name})
+        channel = self.database.filter(Channel.Channel, {'name': channel_name})
+        channel.delete()
+        self.database.commit()
 
     def delete_channel_by_id(self, channel_id):
-        self.channels.remove({'id':channel_id})
+        channel = self.database.filter(Channel.Channel, {'id': channel_id})
+        channel.delete()
+        self.database.commit()
 
+    def add_channel_unwanted_word(self, channelName, unwanted_words):
 
-    def add_channel_unwanted_word(self,channelName,unwanted_words):
+        channel = self.channels.get(Channel.Channel, {"name": channelName})
+        channel.unwanted_words.update(unwanted_words)
+        self.database.commit()
 
-        channel = self.channels.update({"name": channelName},{"$push":{"unwanted_words":{"$each":unwanted_words}}})
+    def get_channel_unwanted_words(self, channelName):
 
-    def get_channel_unwanted_words(self,channelName):
-
-        channel = self.channels.find_one({"name":channelName})
+        channel = self.database.get(Channel.Channel, {"name": channelName})
 
         if not channel:
             print("Channel not found")
             return
 
-        return channel['unwanted_words']
+        return channel.unwanted_words
 
+    def remove_channel_unwanted_word(self, channel_name, unwanted_words):
 
-    def remove_channel_unwanted_word(self,channel_name,unwanted_words):
+        channel = self.database.get(Channel.Channel, {"name": channel_name})
+        channel.unwanted_words = {k: v for k, v in channel.unwanted_words.iteritems() if v != unwanted_words}
 
-        self.channels.update({"name":channel_name},{"$pull":{"unwanted_words":{"$in":unwanted_words}}})
+        self.database.commit()
 
-    def change_channel_date(self,channel_name,new_date):
+    def change_channel_date(self, channel_name, new_date):
 
-        self.channels.update(
-            {"name":channel_name},#finds the channel
-            {"$set":{"date":new_date}}#update the date
-        )
+        channel = self.database.get(Channel.Channel, {'name': channel_name})
+        channel.date = new_date
 
-
-
-    #videos
-    def save_video(self,channel_id, video):
+    # videos
+    def save_video(self, channel_id, video):
 
         video['channel_id'] = channel_id
 
-        if not self.videos.find_one({"id":video['id']}):
+        if not self.videos.find_one({"id": video['id']}):
             video['add_date'] = self.get_current_date()
             self.videos.insert(video)
 
@@ -82,29 +85,29 @@ class Database:
     def set_video_downloaded(self, video_id):
 
         self.videos.update(
-            {"id":video_id},
-            {"$set":{"downloaded":True, "download_date": self.get_current_date()}}
+            {"id": video_id},
+            {"$set": {"downloaded": True, "download_date": self.get_current_date()}}
         )
 
     def set_video_download_data(self, video_id, download_data):
         self.videos.update(
             {"id": video_id},
-            {"$set":{"download_data": download_data}}
+            {"$set": {"download_data": download_data}}
         )
 
     # gets all not downloaded videos of a channel by its id or name,
     # if no channel is given than finds not downloaded videos from all channels
-    def get_not_downloaded_videos(self,**kwargs):
+    def get_not_downloaded_videos(self, **kwargs):
 
         if len(kwargs) == 0:
 
-            return self.videos.find({"downloaded":None}).sort([
+            return self.videos.find({"downloaded": None}).sort([
                 ("add_date", -1)
             ])
 
         elif "channel_name" in kwargs:
 
-            channel = self.channels.find_one({"name":kwargs['channel_name']})
+            channel = self.channels.find_one({"name": kwargs['channel_name']})
 
             if not channel:
                 return False
@@ -113,23 +116,23 @@ class Database:
         else:
             channel_id = kwargs['channel_id']
 
-        return self.videos.find({"channel_id":channel_id,"downloaded":None})
+        return self.videos.find({"channel_id": channel_id, "downloaded": None})
 
-    def video_was_downloaded(self,video_id):
+    def video_was_downloaded(self, video_id):
 
-        if self.videos.find_one({"id":video_id,"downloaded":True}):
+        if self.videos.find_one({"id": video_id, "downloaded": True}):
             return True
 
         return False
 
     # general config
 
-    def set_download_path(self,path):
+    def set_download_path(self, path):
 
         downlod_path = self.get_download_path()
 
         if not downlod_path:
-            self.database.save(Configuration.Configuration({'name': 'download_path', 'download_path':path}))
+            self.database.save(Configuration.Configuration({'name': 'download_path', 'download_path': path}))
         else:
             downlod_path.download_path = path
 
@@ -137,7 +140,10 @@ class Database:
 
     def get_download_path(self):
 
-        download_path = self.database.get(Configuration.Configuration, {'name': 'download_path'})
+        try:
+            download_path = self.database.get(Configuration.Configuration, {'name': 'download_path'})
+        except:
+            return False
 
         if download_path:
             return download_path.download_path
@@ -151,7 +157,8 @@ class Database:
         videos = []
 
         for channel in channels:
-            video = self.videos.find_one({"channel_id": channel['_id'], "downloaded": True}, sort=[("download_date", pymongo.DESCENDING)])
+            video = self.videos.find_one({"channel_id": channel['_id'], "downloaded": True},
+                                         sort=[("download_date", pymongo.DESCENDING)])
 
             if video:
                 videos.append(video)
@@ -162,10 +169,12 @@ class Database:
         return time.strftime("%d/%m/%Y-%H:%M:%S")
 
     def set_last_search_date(self):
-        self.configuration.update({"name":"last_search_date"},{"last_search_date":self.get_current_date(),"name":"last_search_date"},upsert=True)
+        self.configuration.update({"name": "last_search_date"},
+                                  {"last_search_date": self.get_current_date(), "name": "last_search_date"},
+                                  upsert=True)
 
     def get_last_search_date(self):
 
-        last_search_date = self.configuration.find_one({"name":"last_search_date"})
+        last_search_date = self.configuration.find_one({"name": "last_search_date"})
 
         return last_search_date['last_search_date']
