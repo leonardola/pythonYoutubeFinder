@@ -1,7 +1,7 @@
 __author__ = 'leonardoalbuquerque'
 
-from blitzdb import FileBackend
-from Entity import Channel, Configuration
+from blitzdb import FileBackend, queryset
+from Entity import Channel, Configuration, Video
 
 import time
 
@@ -74,26 +74,33 @@ class Database:
 
         video['channel_id'] = channel_id
 
-        if not self.videos.find_one({"id": video['id']}):
+        try:
+            self.database.get(Video.Video, {"id": video['id']})
+        except:
             video['add_date'] = self.get_current_date()
-            self.videos.insert(video)
+            self.database.save(Video.Video(video))
 
+            self.database.commit()
             return False
 
         return True
 
     def set_video_downloaded(self, video_id):
 
-        self.videos.update(
-            {"id": video_id},
-            {"$set": {"downloaded": True, "download_date": self.get_current_date()}}
-        )
+        video = self.database.get(Video.Video, {"id": video_id})
+        video.download_date = self.get_current_date()
+
+        self.database.commit()
+        # {"$set": {"downloaded": True, "download_date": self.get_current_date()}}
 
     def set_video_download_data(self, video_id, download_data):
-        self.videos.update(
-            {"id": video_id},
-            {"$set": {"download_data": download_data}}
-        )
+
+        video = self.database.get(Video.Video, {"id": video_id})
+        video.download_data = download_data
+
+        self.database.commit()
+
+        # {"$set": {"download_data": download_data}}
 
     # gets all not downloaded videos of a channel by its id or name,
     # if no channel is given than finds not downloaded videos from all channels
@@ -101,29 +108,28 @@ class Database:
 
         if len(kwargs) == 0:
 
-            return self.videos.find({"downloaded": None}).sort([
-                ("add_date", -1)
-            ])
+            return self.database.filter(Video.Video, {"downloaded": None})
 
         elif "channel_name" in kwargs:
 
-            channel = self.channels.find_one({"name": kwargs['channel_name']})
+            channel = self.database.filter(Video.Video, {"name": kwargs['channel_name']})
 
             if not channel:
                 return False
 
-            channel_id = channel['_id']
+            channel_id = channel['pk']
         else:
             channel_id = kwargs['channel_id']
 
-        return self.videos.find({"channel_id": channel_id, "downloaded": None})
+        return self.database.filter(Video.Video, {"channel_id": channel_id, "downloaded": None})
 
     def video_was_downloaded(self, video_id):
 
-        if self.videos.find_one({"id": video_id, "downloaded": True}):
+        try:
+            self.database.get(Video.Video, {"id": video_id, "downloaded": True})
             return True
-
-        return False
+        except:
+            return False
 
     # general config
 
@@ -157,8 +163,7 @@ class Database:
         videos = []
 
         for channel in channels:
-            video = self.videos.find_one({"channel_id": channel['_id'], "downloaded": True},
-                                         sort=[("download_date", pymongo.DESCENDING)])
+            video = self.database.filter(Video.Video, {'channel_id': channel.pk}).sort('download_date', queryset.QuerySet.DESCENDING)
 
             if video:
                 videos.append(video)
@@ -169,12 +174,19 @@ class Database:
         return time.strftime("%d/%m/%Y-%H:%M:%S")
 
     def set_last_search_date(self):
-        self.configuration.update({"name": "last_search_date"},
-                                  {"last_search_date": self.get_current_date(), "name": "last_search_date"},
-                                  upsert=True)
+        configuration = self.database.get(Configuration.Configuration, {"name": "last_search_date"})
+        configuration.last_search_date = self.get_current_date()
+
+        self.database.commit()
+        #self.configuration.update({"name": "last_search_date"},
+         #                         {"last_search_date": self.get_current_date(), "name": "last_search_date"},
+          #                        upsert=True)
 
     def get_last_search_date(self):
 
-        last_search_date = self.configuration.find_one({"name": "last_search_date"})
+        try:
+            last_search_date = self.database.get(Configuration.Configuration, {"name": "last_search_date"})
+        except:
+            return "Never"
 
         return last_search_date['last_search_date']

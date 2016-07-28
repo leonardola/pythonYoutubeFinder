@@ -9,8 +9,6 @@ class Main:
     def __init__(self, socketio):
 
         self.socketio = socketio
-        #remove this line
-        #socketio.emit('my event', {'data': 42})
 
         #start the finder
         self.finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
@@ -41,7 +39,7 @@ class Main:
             #this allow to save all videos before downloading so if
             #anything happens while downloading it can recover
             for video in videos:
-                self.database.save_video(channel['_id'],video)
+                self.database.save_video(channel['pk'],video)
 
             #download each video
             for video in videos:
@@ -56,7 +54,7 @@ class Main:
 
         videos = self.database.get_not_downloaded_videos()
 
-        if videos.count() > 0:
+        if len(videos) > 0:
             print "Videos that failed\n"
 
             for video in videos:
@@ -82,7 +80,7 @@ class Main:
 
         videos = self.database.get_not_downloaded_videos()
 
-        if videos.count() > 0:
+        if len(videos) > 0:
             print "downloading videos that failed download"
 
         for video in videos:
