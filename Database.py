@@ -5,15 +5,16 @@ from Entity import Channel, Configuration, Video
 
 import time
 
-# new db
-from CodernityDB.database import Database
+def singleton(cls):
+    return cls()
 
-
+@singleton
 class Database:
-    def __init__(self):
 
+    def __init__(self):
         self.database = FileBackend("db")
 
+        return
         # self.channels = database.filter(Channel)
         # self.videos = database.filter()
         # self.configuration = database.configuration
@@ -68,11 +69,13 @@ class Database:
 
         channel = self.database.get(Channel.Channel, {'name': channel_name})
         channel.date = new_date
+        self.database.commit()
 
     # videos
     def save_video(self, channel_id, video):
 
         video['channel_id'] = channel_id
+        video['downloaded'] = None
 
         try:
             self.database.get(Video.Video, {"id": video['id']})
@@ -108,7 +111,7 @@ class Database:
 
         if len(kwargs) == 0:
 
-            return self.database.filter(Video.Video, {"downloaded": None})
+            return self.database.filter(Video.Video, {})
 
         elif "channel_name" in kwargs:
 
@@ -135,12 +138,11 @@ class Database:
 
     def set_download_path(self, path):
 
-        downlod_path = self.get_download_path()
-
-        if not downlod_path:
+        try:
+            download_path = self.database.get(Configuration.Configuration, {'name': 'download_path'})
+            download_path['download_path'] = path
+        except:
             self.database.save(Configuration.Configuration({'name': 'download_path', 'download_path': path}))
-        else:
-            downlod_path.download_path = path
 
         self.database.commit()
 
@@ -148,11 +150,11 @@ class Database:
 
         try:
             download_path = self.database.get(Configuration.Configuration, {'name': 'download_path'})
-        except:
+        except Configuration.Configuration.DoesNotExist as err:
             return False
 
         if download_path:
-            return download_path.download_path
+            return download_path['download_path']
 
         return False
 
@@ -174,13 +176,15 @@ class Database:
         return time.strftime("%d/%m/%Y-%H:%M:%S")
 
     def set_last_search_date(self):
-        configuration = self.database.get(Configuration.Configuration, {"name": "last_search_date"})
+
+        try:
+            configuration = self.database.get(Configuration.Configuration, {"name": "last_search_date"})
+        except:
+            configuration = self.database.save(Configuration.Configuration({'name': "last_search_date", "last_search_date": self.get_current_date()}))
+
         configuration.last_search_date = self.get_current_date()
 
         self.database.commit()
-        #self.configuration.update({"name": "last_search_date"},
-         #                         {"last_search_date": self.get_current_date(), "name": "last_search_date"},
-          #                        upsert=True)
 
     def get_last_search_date(self):
 

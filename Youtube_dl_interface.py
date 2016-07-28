@@ -1,10 +1,8 @@
 from __future__ import unicode_literals
 import youtube_dl
-from Database import Database
-
-database = Database()
 
 class Youtube_dl_interface:
+
 
     def __init__(self, socketio):
         self.socketio = socketio

@@ -14,12 +14,12 @@ app.config['SECRET_KEY'] = 'secret!'
 
 socketio = SocketIO(app)
 
-database = Database()
+database = Database
 
 def getRequestData():
     imutableData = request.form
     return {k:v for k,v in imutableData.items()}
 
-from Controller import DefaultController
 from Controller import ChannelsController
+from Controller import DefaultController
 from Controller import DownloadController

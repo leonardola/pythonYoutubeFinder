@@ -2,7 +2,7 @@ __author__ = 'leonardoalbuquerque'
 
 from Finder import Finder
 from Youtube_dl_interface import Youtube_dl_interface
-from Database import Database
+from Controller import database
 
 class Main:
 
@@ -17,19 +17,19 @@ class Main:
         self.youtube_dl = Youtube_dl_interface(self.socketio)
 
         #start the database conection
-        self.database = Database()
+        #database = Database()
 
         #finds new videos
-        self.channels = self.database.get_channels_list()
+        self.channels = database.get_channels_list()
 
-        self.download_path = self.database.get_download_path()
+        self.download_path = database.get_download_path()
 
     def start(self):
 
         #it is good to download failed videos first
         self.download_failed_videos()
 
-        for channel in self.channels:
+        for channel in database.get_channels_list():#self.channels:
 
             #search videos
             videos = self.finder.search(channel["id"],channel["unwanted_words"],channel['date'])
@@ -39,7 +39,7 @@ class Main:
             #this allow to save all videos before downloading so if
             #anything happens while downloading it can recover
             for video in videos:
-                self.database.save_video(channel['pk'],video)
+                database.save_video(channel['pk'],video)
 
             #download each video
             for video in videos:
@@ -49,10 +49,10 @@ class Main:
             if videos:
                 last_video = videos[0]
 
-                self.database.change_channel_date(channel["name"],last_video["published_at"])
+                database.change_channel_date(channel["name"],last_video["published_at"])
 
 
-        videos = self.database.get_not_downloaded_videos()
+        videos = database.get_not_downloaded_videos()
 
         if len(videos) > 0:
             print "Videos that failed\n"
@@ -60,25 +60,27 @@ class Main:
             for video in videos:
                 print "%s\n" % (video['tittle'])
 
-        self.database.set_last_search_date()
+        database.set_last_search_date()
+
+        print("done")
 
 
     #donwload a video then set it as downloaded
     def download_video(self,video_id):
 
-        if not self.database.video_was_downloaded(video_id):
+        if not database.video_was_downloaded(video_id):
 
-            self.youtube_dl.download(video_id,self.database.get_download_path())
+            self.youtube_dl.download(video_id,database.get_download_path())
             print("Downloaded")
         else:
             print("Already downloaded")
 
-        self.database.set_video_downloaded(video_id)
+        database.set_video_downloaded(video_id)
 
     #downloads all the videso that failed to download last time
     def download_failed_videos(self):
 
-        videos = self.database.get_not_downloaded_videos()
+        videos = database.get_not_downloaded_videos()
 
         if len(videos) > 0:
             print "downloading videos that failed download"

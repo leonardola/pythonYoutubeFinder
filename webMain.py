@@ -1,6 +1,6 @@
 __author__ = 'leonardoalbuquerque'
 
-from Controller import DownloadController, app
+from Controller import app, DownloadController
 
 if __name__ == '__main__':
     app.debug = True
