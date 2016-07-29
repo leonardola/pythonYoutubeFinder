@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask.ext.socketio import SocketIO
 
+
 app = Flask(__name__)
 
 from Database import Database
@@ -14,7 +15,7 @@ app.config['SECRET_KEY'] = 'secret!'
 
 socketio = SocketIO(app)
 
-database = Database
+database = Database()
 
 def getRequestData():
     imutableData = request.form

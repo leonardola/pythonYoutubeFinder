@@ -13,7 +13,7 @@ class DownloadScheduler():
     def __init__(self, socketio):
         self.main = Main(socketio)
 
-        #self.execute_now()
+        self.execute_now()
 
         cron = Scheduler(daemon=True)
         cron.start()

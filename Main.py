@@ -4,6 +4,8 @@ from Finder import Finder
 from Youtube_dl_interface import Youtube_dl_interface
 from Controller import database
 
+database = database
+
 class Main:
 
     def __init__(self, socketio):
@@ -36,6 +38,9 @@ class Main:
 
             if not videos:
                 continue
+
+            database.set_last_search_date()
+
             #this allow to save all videos before downloading so if
             #anything happens while downloading it can recover
             for video in videos:
@@ -50,7 +55,6 @@ class Main:
                 last_video = videos[0]
 
                 database.change_channel_date(channel["name"],last_video["published_at"])
-
 
         videos = database.get_not_downloaded_videos()
 

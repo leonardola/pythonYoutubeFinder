@@ -1,8 +1,7 @@
 from flask.ext.socketio import emit
 from flask import render_template
-from Controller import socketio
+from Controller import socketio, app, database
 from DownloadScheduler import DownloadScheduler
-from Controller import app, database
 
 downloadScheduler = DownloadScheduler(socketio)
 

@@ -5,14 +5,11 @@ from Entity import Channel, Configuration, Video
 
 import time
 
-def singleton(cls):
-    return cls()
-
-@singleton
 class Database:
 
     def __init__(self):
         self.database = FileBackend("db")
+        self.database.autocommit = True
 
         return
         # self.channels = database.filter(Channel)
@@ -25,7 +22,6 @@ class Database:
         data['date'] += "T19:00:00+00:00"
 
         addedChannel = self.database.save(Channel.Channel(data))
-        self.database.commit()
 
         return addedChannel
 
@@ -35,18 +31,16 @@ class Database:
     def delete_channel_by_name(self, channel_name):
         channel = self.database.filter(Channel.Channel, {'name': channel_name})
         channel.delete()
-        self.database.commit()
 
     def delete_channel_by_id(self, channel_id):
         channel = self.database.filter(Channel.Channel, {'id': channel_id})
         channel.delete()
-        self.database.commit()
 
     def add_channel_unwanted_word(self, channelName, unwanted_words):
 
         channel = self.channels.get(Channel.Channel, {"name": channelName})
         channel.unwanted_words.update(unwanted_words)
-        self.database.commit()
+        channel.save()
 
     def get_channel_unwanted_words(self, channelName):
 
@@ -62,20 +56,19 @@ class Database:
 
         channel = self.database.get(Channel.Channel, {"name": channel_name})
         channel.unwanted_words = {k: v for k, v in channel.unwanted_words.iteritems() if v != unwanted_words}
-
-        self.database.commit()
+        channel.save()
 
     def change_channel_date(self, channel_name, new_date):
 
         channel = self.database.get(Channel.Channel, {'name': channel_name})
         channel.date = new_date
-        self.database.commit()
+        channel.save()
 
     # videos
     def save_video(self, channel_id, video):
 
         video['channel_id'] = channel_id
-        video['downloaded'] = None
+        video['downloaded'] = False
 
         try:
             self.database.get(Video.Video, {"id": video['id']})
@@ -83,7 +76,6 @@ class Database:
             video['add_date'] = self.get_current_date()
             self.database.save(Video.Video(video))
 
-            self.database.commit()
             return False
 
         return True
@@ -92,16 +84,16 @@ class Database:
 
         video = self.database.get(Video.Video, {"id": video_id})
         video.download_date = self.get_current_date()
+        video.downloaded = 'True'
+        video.save()
 
-        self.database.commit()
         # {"$set": {"downloaded": True, "download_date": self.get_current_date()}}
 
     def set_video_download_data(self, video_id, download_data):
 
         video = self.database.get(Video.Video, {"id": video_id})
         video.download_data = download_data
-
-        self.database.commit()
+        video.save()
 
         # {"$set": {"download_data": download_data}}
 
@@ -111,7 +103,7 @@ class Database:
 
         if len(kwargs) == 0:
 
-            return self.database.filter(Video.Video, {})
+            return self.database.filter(Video.Video, {"downloaded": False})
 
         elif "channel_name" in kwargs:
 
@@ -140,11 +132,10 @@ class Database:
 
         try:
             download_path = self.database.get(Configuration.Configuration, {'name': 'download_path'})
-            download_path['download_path'] = path
+            download_path.download_path = path
+            download_path.save()
         except:
             self.database.save(Configuration.Configuration({'name': 'download_path', 'download_path': path}))
-
-        self.database.commit()
 
     def get_download_path(self):
 
@@ -183,8 +174,7 @@ class Database:
             configuration = self.database.save(Configuration.Configuration({'name': "last_search_date", "last_search_date": self.get_current_date()}))
 
         configuration.last_search_date = self.get_current_date()
-
-        self.database.commit()
+        configuration.save()
 
     def get_last_search_date(self):
 
