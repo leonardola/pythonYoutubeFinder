@@ -28,6 +28,8 @@ class Main:
 
     def start(self):
 
+        print("started searching videos")
+
         #it is good to download failed videos first
         self.download_failed_videos()
 
