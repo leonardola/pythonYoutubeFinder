@@ -23,9 +23,6 @@ then
     echo "updating virtualenv"
     pip install --upgrade virtualenv
 
-    echo "installing mongodb"
-    apt-get -y install mongodb
-
     echo "changing permissions"
     chmod -R 777 ./
 
@@ -36,7 +33,7 @@ then
     pip install flask
     pip install apscheduler==2.1.2
     pip install flask-socketio
-    pip install pymongo
+    pip install blitzdb
     pip install eventlet
     pip install gevent-websocket
 

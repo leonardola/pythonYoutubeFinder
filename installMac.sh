@@ -7,9 +7,6 @@ sudo pip install --upgrade pip
 echo "updating virtualenv"
 pip install --upgrade virtualenv
 
-echo "installing mongodb"
-brew install mongodb
-
 echo "changing permissions"
 chmod -R 777 ./
 
@@ -21,6 +18,6 @@ pip install youtube-dl
 pip install flask
 pip install apscheduler==2.1.2
 pip install flask-socketio
-pip install pymongo
+pip install blitzdb
 pip install eventlet
 pip install gevent-websocket
