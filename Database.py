@@ -156,10 +156,10 @@ class Database:
         videos = []
 
         for channel in channels:
-            video = self.database.filter(Video.Video, {'channel_id': channel.pk}).sort('download_date', queryset.QuerySet.DESCENDING)
+            videoFromDb = self.database.filter(Video.Video, {'channel_id': channel.pk}).sort('download_date', queryset.QuerySet.DESCENDING)
 
-            if video:
-                videos.append(video)
+            if videoFromDb:
+                videos.append(videoFromDb.next())
 
         return videos
 
