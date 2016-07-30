@@ -62,7 +62,7 @@ class Main:
             print "Videos that failed\n"
 
             for video in videos:
-                print "%s\n" % (video['tittle'])
+                print "%s\n" % (video['tittle'].encode('utf-8'))
 
         database.set_last_search_date()
 
