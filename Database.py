@@ -61,6 +61,12 @@ class Database:
         channel.date = new_date
         channel.save()
 
+
+
+
+
+
+
     # videos
     def save_video(self, channel_id, video):
 
@@ -84,15 +90,11 @@ class Database:
         video.downloaded = 'True'
         video.save()
 
-        # {"$set": {"downloaded": True, "download_date": self.get_current_date()}}
-
     def set_video_download_data(self, video_id, download_data):
 
         video = self.database.get(Video.Video, {"id": video_id})
         video.download_data = download_data
         video.save()
-
-        # {"$set": {"download_data": download_data}}
 
     # gets all not downloaded videos of a channel by its id or name,
     # if no channel is given than finds not downloaded videos from all channels
@@ -113,7 +115,7 @@ class Database:
         else:
             channel_id = kwargs['channel_id']
 
-        return self.database.filter(Video.Video, {"channel_id": channel_id, "downloaded": None}).sort('download_date', queryset.QuerySet.ASCENDING)
+        return self.database.filter(Video.Video, {"channel_id": channel_id, "downloaded": False}).sort('download_date', queryset.QuerySet.ASCENDING)
 
     def video_was_downloaded(self, video_id):
 
@@ -122,6 +124,13 @@ class Database:
             return True
         except:
             return False
+
+
+
+
+
+
+
 
     # general config
 
@@ -159,6 +168,13 @@ class Database:
                 videos.append(videoFromDb.next())
 
         return videos
+
+
+
+
+
+
+
 
     def get_current_date(self):
         return time.strftime("%d/%m/%Y-%H:%M:%S")
