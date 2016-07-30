@@ -12,9 +12,6 @@ class Database:
         self.database.autocommit = True
 
         return
-        # self.channels = database.filter(Channel)
-        # self.videos = database.filter()
-        # self.configuration = database.configuration
 
     # name, date, id, unwanted_words
     def save_channel(self, data):
@@ -103,11 +100,11 @@ class Database:
 
         if len(kwargs) == 0:
 
-            return self.database.filter(Video.Video, {"downloaded": False})
+            return self.database.filter(Video.Video, {"downloaded": False}).sort('download_date', queryset.QuerySet.ASCENDING)
 
         elif "channel_name" in kwargs:
 
-            channel = self.database.filter(Video.Video, {"name": kwargs['channel_name']})
+            channel = self.database.filter(Video.Video, {"name": kwargs['channel_name']}).sort('download_date', queryset.QuerySet.ASCENDING)
 
             if not channel:
                 return False
@@ -116,7 +113,7 @@ class Database:
         else:
             channel_id = kwargs['channel_id']
 
-        return self.database.filter(Video.Video, {"channel_id": channel_id, "downloaded": None})
+        return self.database.filter(Video.Video, {"channel_id": channel_id, "downloaded": None}).sort('download_date', queryset.QuerySet.ASCENDING)
 
     def video_was_downloaded(self, video_id):
 
