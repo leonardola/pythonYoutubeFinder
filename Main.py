@@ -92,4 +92,3 @@ class Main:
 
         for video in videos:
             self.download_video(video['id'])
-            database.set_video_downloaded(video['id'])
