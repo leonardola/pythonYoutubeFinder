@@ -6,22 +6,22 @@ from Controller import database
 
 database = database
 
-class Main:
 
+class Main:
     def __init__(self, socketio):
 
         self.socketio = socketio
 
-        #start the finder
+        # start the finder
         self.finder = Finder("AIzaSyA_UtBFJDfg9EsdczPFyE9wt7oIm3m1O8E")
 
-        #start the youtube-dl api
+        # start the youtube-dl api
         self.youtube_dl = Youtube_dl_interface(self.socketio)
 
-        #start the database conection
-        #database = Database()
+        # start the database conection
+        # database = Database()
 
-        #finds new videos
+        # finds new videos
         self.channels = database.get_channels_list()
 
         self.download_path = database.get_download_path()
@@ -30,33 +30,33 @@ class Main:
 
         print("started searching videos")
 
-        #it is good to download failed videos first
+        # it is good to download failed videos first
         self.download_failed_videos()
 
-        for channel in database.get_channels_list():#self.channels:
+        for channel in database.get_channels_list():  # self.channels:
 
-            #search videos
-            videos = self.finder.search(channel["id"],channel["unwanted_words"],channel['date'])
+            # search videos
+            videos = self.finder.search(channel["id"], channel["unwanted_words"], channel['date'])
 
             if not videos:
                 continue
 
             database.set_last_search_date()
 
-            #this allow to save all videos before downloading so if
-            #anything happens while downloading it can recover
+            # this allow to save all videos before downloading so if
+            # anything happens while downloading it can recover
             for video in videos:
-                database.save_video(channel['pk'],video)
+                database.save_video(channel['pk'], video)
 
-            #download each video
+            # download each video
             for video in videos:
                 self.download_video(video['id'])
 
-            #sets the starting download date as the last video of the channel
+            # sets the starting download date as the last video of the channel
             if videos:
                 last_video = videos[0]
 
-                database.change_channel_date(channel["name"],last_video["published_at"])
+                database.change_channel_date(channel["name"], last_video["published_at"])
 
         videos = database.get_not_downloaded_videos()
 
@@ -70,20 +70,19 @@ class Main:
 
         print("done")
 
-
-    #donwload a video then set it as downloaded
-    def download_video(self,video_id):
+    # donwload a video then set it as downloaded
+    def download_video(self, video_id):
 
         if not database.video_was_downloaded(video_id):
 
-            self.youtube_dl.download(video_id,database.get_download_path())
+            self.youtube_dl.download(video_id, database.get_download_path())
             print("Downloaded")
         else:
-            print("Already downloaded")
+            print("Video " + video_id + " Already downloaded ")
 
         database.set_video_downloaded(video_id)
 
-    #downloads all the videso that failed to download last time
+    # downloads all the videso that failed to download last time
     def download_failed_videos(self):
 
         videos = database.get_not_downloaded_videos()
@@ -92,6 +91,5 @@ class Main:
             print "downloading videos that failed download"
 
         for video in videos:
-            #print video['tittle'] + "\n"
             self.download_video(video['id'])
-
+            database.set_video_downloaded(video['id'])

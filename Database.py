@@ -79,15 +79,11 @@ class Database:
             video['add_date'] = self.get_current_date()
             self.database.save(Video.Video(video))
 
-            return False
-
-        return True
-
     def set_video_downloaded(self, video_id):
 
         video = self.database.get(Video.Video, {"id": video_id})
         video.download_date = self.get_current_date()
-        video.downloaded = 'True'
+        video.downloaded = True
         video.save()
 
     def set_video_download_data(self, video_id, download_data):
@@ -120,10 +116,10 @@ class Database:
     def video_was_downloaded(self, video_id):
 
         try:
-            self.database.get(Video.Video, {"id": video_id, "downloaded": True})
+            self.database.get(Video.Video, {"downloaded": True})
             return True
         except:
-            return False
+           return False
 
 
 
