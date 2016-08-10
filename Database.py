@@ -116,7 +116,7 @@ class Database:
     def video_was_downloaded(self, video_id):
 
         try:
-            self.database.get(Video.Video, {"downloaded": True})
+            self.database.get(Video.Video, {"downloaded": True, "id": video_id })
             return True
         except:
            return False

@@ -79,8 +79,8 @@ class Finder:
                 order="date",
                 publishedAfter=starting_date
             )
-        except HttpError, e:
-            print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
+        except HttpError as e:
+            print("An HTTP error %d occurred:\n %s") % (e.resp.status, e.content)
 
     def get_channel_id(self, channel_name):
 

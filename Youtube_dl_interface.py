@@ -7,16 +7,16 @@ class Youtube_dl_interface:
     def __init__(self, socketio):
         self.socketio = socketio
         self.video_id = False
-        self.ydl = False
+        #self.ydl = False
         self.already_stoped = False
 
     def progress_hook(self, data):
 
         self.socketio.emit('download status changed', {'videoId':self.video_id, 'downloadData': data})
 
-        if not self.already_stoped:
-            self.already_stoped = True
-            del self.ydl
+        # if not self.already_stoped:
+        #     self.already_stoped = True
+        #     del self.ydl
 
         return
 
