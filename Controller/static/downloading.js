@@ -1,12 +1,11 @@
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 socket.on('connect', function () {
-    //socket.emit('my event', {data: 'I\'m connected!'});
+    socket.emit('my event', {data: 'I\'m connected!'});
     console.log("connected");
 
 
     socket.on('download_status_changed', function (msg) {
 
-        console.log("adsf");
         var videoElement = $("#Downloading .downloading_video[video_id='" + msg.videoId + "']");
         var downloadData = msg['downloadData'];
         var transferedPercentage = downloadData['_percent_str'].trim();
